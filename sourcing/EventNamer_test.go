@@ -1,4 +1,4 @@
-package eventing
+package sourcing
 
 import (
 	. "launchpad.net/gocheck"
@@ -36,5 +36,5 @@ func (s *EventNamerTestSuite) TestGetEventName(c *C) {
 	result := NewTypeEventNamer()
 	name := result.GetEventName(event)
 
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/eventing/MyEvent"))
+	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/sourcing/MyEvent"))
 }

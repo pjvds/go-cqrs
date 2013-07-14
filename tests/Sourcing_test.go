@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/pjvds/go-cqrs/eventing"
+	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/tests/domain"
 	. "launchpad.net/gocheck"
 	"testing"
@@ -27,7 +27,7 @@ func (s *AppTestSuite) TestStateIsEventSources(c *C) {
 
 	// We created a new user, this should be
 	// captured by an event.
-	state := eventing.GetState(user)
+	state := sourcing.GetState(user)
 	c.Assert(len(state.Events), Equals, 1)
 
 	// Change the username of the user

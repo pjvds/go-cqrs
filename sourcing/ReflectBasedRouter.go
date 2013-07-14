@@ -1,4 +1,4 @@
-package eventing
+package sourcing
 
 import (
 	"reflect"

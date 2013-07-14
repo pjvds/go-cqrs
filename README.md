@@ -6,7 +6,7 @@ Currently I am trying to find a nice API to add event sourcing to object state.
 
 ## Event sourcing
 
-Eventing sourcing ensures that all changes to the application state are stored
+sourcing sourcing ensures that all changes to the application state are stored
 as a sequence of events. Not just can we query these events, we can also use
 these events to reconstruct past and current state.
 

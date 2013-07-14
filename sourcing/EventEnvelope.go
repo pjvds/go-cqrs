@@ -1,4 +1,6 @@
-package eventing
+package sourcing
+
+import ()
 
 // Holds the meta information for an event.
 type EventEnvelope struct {

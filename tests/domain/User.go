@@ -1,18 +1,18 @@
 package domain
 
 import (
-	"github.com/pjvds/go-cqrs/eventing"
+	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/tests/events"
 )
 
 type User struct {
 	Username string
-	applier  eventing.EventHandler
+	applier  sourcing.EventHandler
 }
 
 func NewUser(username string) *User {
-	user := &User{}
-	eventing.Attach(user)
+	user := new(User)
+	sourcing.Attach(user)
 
 	user.applier(events.UserCreated{
 		Username: username,
@@ -21,7 +21,7 @@ func NewUser(username string) *User {
 	return user
 }
 
-func (user *User) SetEventApplier(applier eventing.EventHandler) {
+func (user *User) SetEventApplier(applier sourcing.EventHandler) {
 	user.applier = applier
 }
 

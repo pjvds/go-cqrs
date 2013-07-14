@@ -1,4 +1,4 @@
-package eventing
+package sourcing
 
 // Represents an event payload that can be fired by event sources.
 // An event should:
