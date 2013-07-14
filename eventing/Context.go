@@ -8,13 +8,13 @@ var (
 
 func newDefaultContext() *Context {
 	return &Context{
-		sources: make(map[EventSource]SourceState, 5),
+		sources: make(map[EventSource]*SourceState, 5),
 		namer:   NewEventNamer(),
 	}
 }
 
 type Context struct {
-	sources map[EventSource]SourceState
+	sources map[EventSource]*SourceState
 	namer   EventNamer
 }
 
@@ -24,14 +24,18 @@ type SourceState struct {
 }
 
 func (ctx *Context) Attach(source EventSource) {
-	state := SourceState{
-		Events: make([]*EventEnvelope, 2),
+	Log.Debug("Attaching %T", source)
+
+	state := &SourceState{
+		Events: make([]*EventEnvelope, 0),
 	}
 	state.applier = func(e Event) {
 		envelop := &EventEnvelope{
 			Name:    ctx.namer.GetEventName(e),
 			Payload: e,
 		}
+
+		Log.Debug("Applying %v to %T", envelop.Name, source)
 		state.Events = append(state.Events, envelop)
 	}
 	source.SetEventApplier(state.applier)
@@ -41,7 +45,7 @@ func (ctx *Context) Attach(source EventSource) {
 func (ctx *Context) GetState(source EventSource) *SourceState {
 	state, ok := ctx.sources[source]
 	if ok {
-		return &state
+		return state
 	} else {
 		return nil
 	}
