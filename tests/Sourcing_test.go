@@ -29,7 +29,7 @@ func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 	// We created a new user, this should be
 	// captured by an event.
 	state := sourcing.GetState(user)
-	c.Assert(len(state.Events), Equals, 1)
+	c.Assert(len(state.Events()), Equals, 1)
 
 	// Change the username of the user
 	user.ChangeUsername("wwwouter")
@@ -37,7 +37,7 @@ func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 
 	// We changed the username, this should be
 	// captured by an event.
-	c.Assert(len(state.Events), Equals, 2)
+	c.Assert(len(state.Events()), Equals, 2)
 }
 
 func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
@@ -52,8 +52,7 @@ func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 	})
 
 	// Create a new domain object
-	user := new(domain.User)
-	sourcing.AttachWithHistory(user, history)
+	user := domain.NewUserFromHistory(history)
 
 	c.Assert(user.Username, Not(Equals), "pjvds")
 	c.Assert(user.Username, Equals, "wwwouter")

@@ -37,6 +37,8 @@ func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
 				handler := createEventHandler(source, method)
 				eventName := namer.GetEventNameFromType(method.Type.In(1))
 				handlers[eventName] = handler
+
+				Log.Debug("Registered %v as event handler for %v", method.Type.String(), eventName)
 			}
 		}
 	}

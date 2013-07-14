@@ -6,27 +6,31 @@ import (
 )
 
 type User struct {
+	sourcer sourcing.EventSource
+
 	Username string
-	applier  sourcing.EventHandler
 }
 
 func NewUser(username string) *User {
 	user := new(User)
-	sourcing.AttachNew(user)
+	user.sourcer = sourcing.AttachNew(user)
 
-	user.applier(events.UserCreated{
+	user.sourcer.Apply(events.UserCreated{
 		Username: username,
 	})
 
 	return user
 }
 
-func (user *User) SetEventApplier(applier sourcing.EventHandler) {
-	user.applier = applier
+func NewUserFromHistory(history []sourcing.EventEnvelope) *User {
+	user := new(User)
+	user.sourcer = sourcing.AttachFromHistory(user, history)
+
+	return user
 }
 
 func (user *User) ChangeUsername(username string) {
-	user.applier(events.UsernameChanged{
+	user.sourcer.Apply(events.UsernameChanged{
 		OldUsername: user.Username,
 		NewUsername: username,
 	})

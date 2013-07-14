@@ -4,13 +4,13 @@ import ()
 
 func newDefaultContext() *Context {
 	return &Context{
-		sources: make(map[EventSource]*SourceState, 5),
+		sources: make(map[interface{}]*eventSource, 5),
 		namer:   NewTypeEventNamer(),
 	}
 }
 
 type Context struct {
-	sources map[EventSource]*SourceState
+	sources map[interface{}]*eventSource
 	namer   EventNamer
 }
 
@@ -20,61 +20,29 @@ type SourceState struct {
 	router  EventRouter
 }
 
-func (ctx *Context) AttachNew(source EventSource) {
-	Log.Debug("Attaching new %T", source)
+func (ctx *Context) AttachNew(source interface{}) EventSource {
+	Log.Debug("Attaching %T", source)
 
+	namer := ctx.namer
 	router := NewReflectBasedRouter(ctx.namer, source)
-	state := &SourceState{
-		Events: make([]EventEnvelope, 0),
-		router: router,
-	}
-	state.applier = func(e Event) {
-		name := ctx.namer.GetEventName(e)
-		event := e
 
-		envelop := EventEnvelope{
-			Name:    name,
-			Payload: event,
-		}
+	eventSource := newEventSource(namer, router)
 
-		Log.Debug("Applying %v to %T\n\tstate: %+v", envelop.Name, source, event)
-		router.Route(envelop)
-		state.Events = append(state.Events, envelop)
-	}
-	source.SetEventApplier(state.applier)
-	ctx.sources[source] = state
+	ctx.sources[source] = eventSource
+	return eventSource
 }
 
-func (ctx *Context) AttachWithHistory(source EventSource, history []EventEnvelope) {
-	Log.Debug("Attaching new %T", source)
+func (ctx *Context) AttachFromHistory(source interface{}, history []EventEnvelope) EventSource {
+	eventSource := AttachNew(source)
 
-	router := NewReflectBasedRouter(ctx.namer, source)
-	state := &SourceState{
-		Events: make([]EventEnvelope, 0),
-		router: router,
+	for _, event := range history {
+		eventSource.Apply(event.Payload)
 	}
-	state.applier = func(e Event) {
-		name := ctx.namer.GetEventName(e)
-		event := e
 
-		envelop := EventEnvelope{
-			Name:    name,
-			Payload: event,
-		}
-
-		Log.Debug("Applying %v to %T\n\tstate: %+v", envelop.Name, source, event)
-		router.Route(envelop)
-		state.Events = append(state.Events, envelop)
-	}
-	source.SetEventApplier(state.applier)
-	ctx.sources[source] = state
-
-	for _, e := range history {
-		router.Route(e)
-	}
+	return eventSource
 }
 
-func (ctx *Context) GetState(source EventSource) *SourceState {
+func (ctx *Context) GetState(source interface{}) EventSourceState {
 	state, ok := ctx.sources[source]
 	if ok {
 		return state
@@ -83,6 +51,6 @@ func (ctx *Context) GetState(source EventSource) *SourceState {
 	}
 }
 
-func (ctx *Context) Detach(source EventSource) {
+func (ctx *Context) Detach(source interface{}) {
 	delete(ctx.sources, source)
 }
