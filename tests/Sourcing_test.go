@@ -3,6 +3,7 @@ package tests
 import (
 	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/tests/domain"
+	"github.com/pjvds/go-cqrs/tests/events"
 	. "launchpad.net/gocheck"
 	"testing"
 )
@@ -20,7 +21,7 @@ type AppTestSuite struct {
 // Setup the test suite
 var _ = Suite(&AppTestSuite{})
 
-func (s *AppTestSuite) TestStateIsEventSources(c *C) {
+func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 	// Create a new domain object
 	user := domain.NewUser("pjvds")
 	c.Assert(user.Username, Equals, "pjvds")
@@ -37,4 +38,23 @@ func (s *AppTestSuite) TestStateIsEventSources(c *C) {
 	// We changed the username, this should be
 	// captured by an event.
 	c.Assert(len(state.Events), Equals, 2)
+}
+
+func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
+	history := sourcing.PackEvents([]sourcing.Event{
+		events.UserCreated{
+			Username: "pjvds",
+		},
+		events.UsernameChanged{
+			OldUsername: "pjvds",
+			NewUsername: "wwwouter",
+		},
+	})
+
+	// Create a new domain object
+	user := new(domain.User)
+	sourcing.AttachWithHistory(user, history)
+
+	c.Assert(user.Username, Not(Equals), "pjvds")
+	c.Assert(user.Username, Equals, "wwwouter")
 }

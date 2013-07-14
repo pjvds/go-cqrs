@@ -12,7 +12,7 @@ type User struct {
 
 func NewUser(username string) *User {
 	user := new(User)
-	sourcing.Attach(user)
+	sourcing.AttachNew(user)
 
 	user.applier(events.UserCreated{
 		Username: username,

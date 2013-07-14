@@ -4,8 +4,12 @@ var (
 	defaultContext = newDefaultContext()
 )
 
-func Attach(source EventSource) {
-	defaultContext.Attach(source)
+func AttachNew(source EventSource) {
+	defaultContext.AttachNew(source)
+}
+
+func AttachWithHistory(source EventSource, history []EventEnvelope) {
+	defaultContext.AttachWithHistory(source, history)
 }
 
 func GetState(source EventSource) *SourceState {

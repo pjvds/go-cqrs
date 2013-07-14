@@ -20,8 +20,8 @@ type SourceState struct {
 	router  EventRouter
 }
 
-func (ctx *Context) Attach(source EventSource) {
-	Log.Debug("Attaching %T", source)
+func (ctx *Context) AttachNew(source EventSource) {
+	Log.Debug("Attaching new %T", source)
 
 	router := NewReflectBasedRouter(ctx.namer, source)
 	state := &SourceState{
@@ -43,6 +43,35 @@ func (ctx *Context) Attach(source EventSource) {
 	}
 	source.SetEventApplier(state.applier)
 	ctx.sources[source] = state
+}
+
+func (ctx *Context) AttachWithHistory(source EventSource, history []EventEnvelope) {
+	Log.Debug("Attaching new %T", source)
+
+	router := NewReflectBasedRouter(ctx.namer, source)
+	state := &SourceState{
+		Events: make([]EventEnvelope, 0),
+		router: router,
+	}
+	state.applier = func(e Event) {
+		name := ctx.namer.GetEventName(e)
+		event := e
+
+		envelop := EventEnvelope{
+			Name:    name,
+			Payload: event,
+		}
+
+		Log.Debug("Applying %v to %T\n\tstate: %+v", envelop.Name, source, event)
+		router.Route(envelop)
+		state.Events = append(state.Events, envelop)
+	}
+	source.SetEventApplier(state.applier)
+	ctx.sources[source] = state
+
+	for _, e := range history {
+		router.Route(e)
+	}
 }
 
 func (ctx *Context) GetState(source EventSource) *SourceState {
