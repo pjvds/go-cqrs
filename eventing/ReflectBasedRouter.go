@@ -12,7 +12,7 @@ type HandlersMap map[EventName]EventHandler
 // Routes events to methods of an struct by convention. There should be one
 // router per event source instance.
 //
-// The convention is: HandleXXX(e EventType)
+// The convention is: func(s MySource) HandleXXX(e EventType)
 type ReflectBasedRouter struct {
 	handlers HandlersMap
 	source   interface{}
@@ -28,7 +28,7 @@ func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
 
 		// Only match methods that satisfy prefix
 		if strings.HasPrefix(method.Name, MethodHandlerPrefix) {
-			// Warning: Handling methods are defined in code by:
+			// Handling methods are defined in code by:
 			//   func (source *MySource) HandleMyEvent(e MyEvent).
 			// When getting the type of this methods by reflection the signature
 			// is as following:

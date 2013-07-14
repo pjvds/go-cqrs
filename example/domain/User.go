@@ -12,7 +12,7 @@ type User struct {
 
 func NewUser(username string) *User {
 	user := &User{}
-	eventing.DefaultContext.Attach(user)
+	eventing.Attach(user)
 
 	user.applier(events.UserCreated{
 		Username: username,

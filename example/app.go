@@ -14,7 +14,7 @@ func main() {
 	user.ChangeUsername("wwwouter")
 	Log.Info("User: %v", user.Username)
 
-	state := eventing.DefaultContext.GetState(user)
+	state := eventing.GetState(user)
 	for index, value := range state.Events {
 		Log.Info("Event %v: %v\n", index+1, value)
 	}

@@ -2,10 +2,6 @@ package eventing
 
 import ()
 
-var (
-	DefaultContext = newDefaultContext()
-)
-
 func newDefaultContext() *Context {
 	return &Context{
 		sources: make(map[EventSource]*SourceState, 5),
