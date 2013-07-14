@@ -57,3 +57,14 @@ user := domain.NewUserFromHistory(history)
 c.Assert(user.Username, Not(Equals), "pjvds")
 c.Assert(user.Username, Equals, "wwwouter")
 ```
+
+### A sourced domain object
+
+See the [User.go](https://github.com/pjvds/go-cqrs/blob/master/tests/domain/User.go)
+file to see an sourced domain object in action. Note that the samples above show
+that the state of the `User` object does not get updated directly. Rather they
+are updated via methods that capture the intention of what should be done. These
+methods are called command methods. These methods validate whether the state change
+can happen, and if so, they create an event that represents this change and the
+event is applied. This means the event is recorded and send to the event handler
+on the object itself where it will update it's internal state.
