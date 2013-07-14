@@ -1,0 +1,40 @@
+package eventing
+
+import (
+	. "launchpad.net/gocheck"
+	"testing"
+)
+
+// Hook up gocheck into the "go test" runner.
+func Test(t *testing.T) {
+	TestingT(t)
+}
+
+// The state for the test suite
+type EventNamerTestSuite struct {
+}
+
+// Setup the test suite
+var _ = Suite(&EventNamerTestSuite{})
+
+type MyEvent struct {
+	Foo string
+	Bar int
+}
+
+func (s *EventNamerTestSuite) TestNewTypeEventNamerReturnsValue(c *C) {
+	result := NewTypeEventNamer()
+	c.Assert(result, NotNil)
+}
+
+func (s *EventNamerTestSuite) TestGetEventName(c *C) {
+	event := MyEvent{
+		Foo: "baz",
+		Bar: 42,
+	}
+
+	result := NewTypeEventNamer()
+	name := result.GetEventName(event)
+
+	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/eventing/MyEvent"))
+}

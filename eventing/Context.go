@@ -9,7 +9,7 @@ var (
 func newDefaultContext() *Context {
 	return &Context{
 		sources: make(map[EventSource]*SourceState, 5),
-		namer:   NewEventNamer(),
+		namer:   NewTypeEventNamer(),
 	}
 }
 

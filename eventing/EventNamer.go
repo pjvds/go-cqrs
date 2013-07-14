@@ -9,18 +9,18 @@ type EventNamer interface {
 	GetEventNameFromType(eventType reflect.Type) EventName
 }
 
-func NewEventNamer() *eventNamer {
-	return &eventNamer{}
+func NewTypeEventNamer() *TypeEventNamer {
+	return &TypeEventNamer{}
 }
 
-type eventNamer struct {
+type TypeEventNamer struct {
 }
 
-func (namer *eventNamer) GetEventName(e Event) EventName {
+func (namer *TypeEventNamer) GetEventName(e Event) EventName {
 	t := reflect.TypeOf(e)
 	return namer.GetEventNameFromType(t)
 }
 
-func (namer *eventNamer) GetEventNameFromType(t reflect.Type) EventName {
-	return EventName(t.String())
+func (namer *TypeEventNamer) GetEventNameFromType(t reflect.Type) EventName {
+	return EventName(t.PkgPath() + "/" + t.Name())
 }
