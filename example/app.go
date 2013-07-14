@@ -12,7 +12,7 @@ func main() {
 	state := eventing.DefaultContext.GetState(user)
 
 	for index, value := range state.Events {
-		Log.Info("Event %v: %v\n", index, value)
+		Log.Info("Event %v: %v\n", index+1, value)
 	}
 
 	Log.Notice("Bye!!")
