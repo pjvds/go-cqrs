@@ -1,8 +1,8 @@
 package domain
 
 import (
-	"github.com/pjvds/gcqrs/eventing"
-	"github.com/pjvds/gcqrs/example/events"
+	"github.com/pjvds/go-cqrs/eventing"
+	"github.com/pjvds/go-cqrs/example/events"
 )
 
 type User struct {

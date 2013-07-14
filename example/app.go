@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/pjvds/gcqrs/eventing"
-	"github.com/pjvds/gcqrs/example/domain"
+	"github.com/pjvds/go-cqrs/eventing"
+	"github.com/pjvds/go-cqrs/example/domain"
 )
 
 func main() {
