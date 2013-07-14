@@ -10,13 +10,21 @@ sourcing sourcing ensures that all changes to the application state are stored
 as a sequence of events. Not just can we query these events, we can also use
 these events to reconstruct past and current state.
 
-## How to run the examaple
+## Example
 
-    $ go build ./...
-    $ cd example
-    $ ./example
-    2013/07/14 12:57:26 Attaching *domain.User
-    2013/07/14 12:57:26 Applying *events.UserCreated to *domain.User
-    2013/07/14 12:57:26 Event 1: *events.UserCreated
+    // Create a new domain object
+    user := domain.NewUser("pjvds")
+    c.Assert(user.Username, Equals, "pjvds")
 
-    2013/07/14 12:57:26 Bye!!
+    // We created a new user, this should be
+    // captured by an event.
+    state := sourcing.GetState(user)
+    c.Assert(len(state.Events), Equals, 1)
+
+    // Change the username of the user
+    user.ChangeUsername("wwwouter")
+    c.Assert(user.Username, Equals, "wwwouter")
+
+    // We changed the username, this should be
+    // captured by an event.
+    c.Assert(len(state.Events), Equals, 2)
