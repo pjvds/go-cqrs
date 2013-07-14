@@ -7,26 +7,30 @@ import (
 
 var MethodHandlerPrefix = "Handle"
 
+// Routes events to methods of an struct by convention. There should be one
+// router per event source instance.
+//
+// The convention is: HandleXXX(e EventType)
 type ReflectBasedRouter struct {
 	handlers map[EventName]EventHandler
 	source   interface{}
 }
 
 func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
-	t := reflect.TypeOf(source)
+	sourceType := reflect.TypeOf(source)
 	handlers := make(map[EventName]EventHandler)
 
-	for i := 0; i < t.NumMethod(); i++ {
-		m := t.Method(i)
+	for i := 0; i < sourceType.NumMethod(); i++ {
+		method := sourceType.Method(i)
 
-		if strings.HasPrefix(m.Name, MethodHandlerPrefix) && m.Type.NumIn() == 2 {
-			source := source
+		// Handler method will have the following signature from an reflection
+		// point of view: HandleUserCreated(*domain.User, events.UserCreated)
+		if strings.HasPrefix(method.Name, MethodHandlerPrefix) && method.Type.NumIn() == 2 {
 			handler := func(e Event) {
-				m.Func.Call([]reflect.Value{reflect.ValueOf(source), reflect.ValueOf(e)})
+				method.Func.Call([]reflect.Value{reflect.ValueOf(source), reflect.ValueOf(e)})
 			}
-			name := namer.GetEventNameFromType(m.Type.In(1))
-			handlers[name] = handler
-
+			eventName := namer.GetEventNameFromType(method.Type.In(1))
+			handlers[eventName] = handler
 		}
 	}
 
@@ -38,10 +42,9 @@ func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
 func (router *ReflectBasedRouter) Route(e EventEnvelope) {
 	Log.Debug("Routing %+v", e)
 
-	handler := router.handlers[e.Name]
-	if handler == nil {
-		Log.Error("No handler found for event: %v", e.Name)
-	} else {
+	if handler, ok := router.handlers[e.Name]; ok {
 		handler(e.Payload)
+	} else {
+		Log.Error("No handler found for event: %v", e.Name)
 	}
 }
