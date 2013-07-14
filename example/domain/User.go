@@ -14,7 +14,7 @@ func NewUser(username string) *User {
 	user := &User{}
 	eventing.DefaultContext.Attach(user)
 
-	user.applier(&events.UserCreated{
+	user.applier(events.UserCreated{
 		Username: username,
 	})
 
@@ -26,7 +26,16 @@ func (user *User) SetEventApplier(applier eventing.EventHandler) {
 }
 
 func (user *User) ChangeUsername(username string) {
-	user.applier(&events.UsernameChanged{
+	user.applier(events.UsernameChanged{
+		OldUsername: user.Username,
 		NewUsername: username,
 	})
+}
+
+func (user *User) HandleUserCreated(e events.UserCreated) {
+	user.Username = e.Username
+}
+
+func (user *User) HandleUsernameChanged(e events.UsernameChanged) {
+	user.Username = e.NewUsername
 }

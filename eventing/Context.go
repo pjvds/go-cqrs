@@ -19,23 +19,30 @@ type Context struct {
 }
 
 type SourceState struct {
-	Events  []*EventEnvelope
+	Events  []EventEnvelope
 	applier EventHandler
+	router  EventRouter
 }
 
 func (ctx *Context) Attach(source EventSource) {
 	Log.Debug("Attaching %T", source)
 
+	router := NewReflectBasedRouter(ctx.namer, source)
 	state := &SourceState{
-		Events: make([]*EventEnvelope, 0),
+		Events: make([]EventEnvelope, 0),
+		router: router,
 	}
 	state.applier = func(e Event) {
-		envelop := &EventEnvelope{
-			Name:    ctx.namer.GetEventName(e),
-			Payload: e,
+		name := ctx.namer.GetEventName(e)
+		event := e
+
+		envelop := EventEnvelope{
+			Name:    name,
+			Payload: event,
 		}
 
-		Log.Debug("Applying %v to %T", envelop.Name, source)
+		Log.Debug("Applying %v to %T\n\tstate: %+v", envelop.Name, source, event)
+		router.Route(envelop)
 		state.Events = append(state.Events, envelop)
 	}
 	source.SetEventApplier(state.applier)
