@@ -12,19 +12,21 @@ these events to reconstruct past and current state.
 
 ## Example
 
-    // Create a new domain object
-    user := domain.NewUser("pjvds")
-    c.Assert(user.Username, Equals, "pjvds")
+``` go
+// Create a new domain object
+user := domain.NewUser("pjvds")
+c.Assert(user.Username, Equals, "pjvds")
 
-    // We created a new user, this should be
-    // captured by an event.
-    state := sourcing.GetState(user)
-    c.Assert(len(state.Events), Equals, 1)
+// We created a new user, this should be
+// captured by an event.
+state := sourcing.GetState(user)
+c.Assert(len(state.Events), Equals, 1)
 
-    // Change the username of the user
-    user.ChangeUsername("wwwouter")
-    c.Assert(user.Username, Equals, "wwwouter")
+// Change the username of the user
+user.ChangeUsername("wwwouter")
+c.Assert(user.Username, Equals, "wwwouter")
 
-    // We changed the username, this should be
-    // captured by an event.
-    c.Assert(len(state.Events), Equals, 2)
+// We changed the username, this should be
+// captured by an event.
+c.Assert(len(state.Events), Equals, 2)
+```
