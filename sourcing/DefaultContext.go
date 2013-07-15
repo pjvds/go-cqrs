@@ -16,6 +16,6 @@ func GetState(source interface{}) EventSourceState {
 	return defaultContext.GetState(source)
 }
 
-func Detach(source EventSource) {
+func Detach(source interface{}) {
 	defaultContext.Detach(source)
 }
