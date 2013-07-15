@@ -20,20 +20,23 @@ type SourceState struct {
 	router  EventRouter
 }
 
-func (ctx *Context) AttachNew(source interface{}) EventSource {
-	Log.Debug("Attaching %T", source)
-
+func (ctx *Context) attach(id EventSourceId, source interface{}) EventSource {
 	namer := ctx.namer
 	router := NewReflectBasedRouter(ctx.namer, source)
 
-	eventSource := newEventSource(namer, router)
+	eventSource := newEventSource(id, namer, router)
 
 	ctx.sources[source] = eventSource
 	return eventSource
 }
 
+func (ctx *Context) AttachNew(source interface{}) EventSource {
+	return ctx.attach(NewEventSourceId(), source)
+}
+
 func (ctx *Context) AttachFromHistory(source interface{}, history []EventEnvelope) EventSource {
-	eventSource := AttachNew(source)
+	id := history[0].EventSourceId
+	eventSource := ctx.attach(id, source)
 
 	for _, event := range history {
 		eventSource.Apply(event.Payload)

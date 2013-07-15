@@ -27,7 +27,7 @@ func NewUser(username string) *User {
 
 // Creates an new User object and builds the state from the history.
 func NewUserFromHistory(history []sourcing.EventEnvelope) *User {
-	user := new(User)
+	var user = new(User)
 	user.sourcer = sourcing.AttachFromHistory(user, history)
 
 	return user

@@ -1,11 +1,26 @@
 package sourcing
 
-import ()
+import (
+	"time"
+)
 
 // Holds the meta information for an event.
 type EventEnvelope struct {
-	Name    EventName
-	Payload Event
+	EventSourceId EventSourceId
+	Name          EventName
+	Sequence      EventSequence
+	Timestamp     time.Time
+	Payload       Event
+}
+
+func NewEventEnvelope(eventSourceId EventSourceId, name EventName, sequence EventSequence, timestamp time.Time, payload Event) *EventEnvelope {
+	return &EventEnvelope{
+		EventSourceId: eventSourceId,
+		Name:          name,
+		Sequence:      sequence,
+		Timestamp:     timestamp,
+		Payload:       payload,
+	}
 }
 
 func (e *EventEnvelope) String() string {

@@ -1,24 +1,35 @@
 package sourcing
 
+import (
+	"time"
+)
+
 type EventSourceState interface {
 	Events() []EventEnvelope
 }
 
 type EventSource interface {
+	Id() EventSourceId
 	Apply(event Event)
 }
 
 type eventSource struct {
+	id         EventSourceId
 	eventNamer EventNamer
 	events     []EventEnvelope
 	router     EventRouter
 }
 
-func newEventSource(eventNamer EventNamer, router EventRouter) *eventSource {
+func newEventSource(id EventSourceId, eventNamer EventNamer, router EventRouter) *eventSource {
 	return &eventSource{
+		id:         id,
 		eventNamer: eventNamer,
 		router:     router,
 	}
+}
+
+func (source *eventSource) Id() EventSourceId {
+	return source.id
 }
 
 func (source *eventSource) Events() []EventEnvelope {
@@ -27,8 +38,10 @@ func (source *eventSource) Events() []EventEnvelope {
 
 func (source *eventSource) Apply(event Event) {
 	envelope := EventEnvelope{
-		Name:    source.eventNamer.GetEventName(event),
-		Payload: event,
+		EventSourceId: source.Id(),
+		Name:          source.eventNamer.GetEventName(event),
+		Timestamp:     time.Now(),
+		Payload:       event,
 	}
 	source.router.Route(envelope)
 	source.events = append(source.events, envelope)
