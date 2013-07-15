@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"errors"
 	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/tests/events"
 )
@@ -8,6 +9,7 @@ import (
 // Holds the state of our user. Note that
 // state like Username is not updated directly!
 type User struct {
+	// Reference to the sourcer
 	sourcer sourcing.EventSource
 
 	Username string
@@ -34,11 +36,19 @@ func NewUserFromHistory(history []sourcing.EventEnvelope) *User {
 }
 
 // Change the username to a new name.
-func (user *User) ChangeUsername(username string) {
+func (user *User) ChangeUsername(username string) error {
+	// Validate username
+	if lenght := len(username); lenght < 3 || lenght > 20 {
+		return errors.New("invalid username lenght")
+	}
+
+	// Raise the fact that the username is changed.
 	user.sourcer.Apply(events.UsernameChanged{
 		OldUsername: user.Username,
 		NewUsername: username,
 	})
+
+	return nil
 }
 
 // Update the User state for an UserCreated event.
