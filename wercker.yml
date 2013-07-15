@@ -25,6 +25,10 @@ build:
         code: go test ./...
 
     - script:
+        name: Benchmark
+        code: go test --gocheck.b ./...
+
+    - script:
         name: Store cache
         code: |-
             # BEFORE YOU COPY AND USE THIS STEP IN YOUR OWN BUILD PIPELINE
