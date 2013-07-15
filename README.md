@@ -1,14 +1,9 @@
 # Go-CQRS
 
-This is an experimental library that tries to bring the concepts from CQRS to Go.
-
-Currently I am trying to find a nice API to add event sourcing to object state.
-
-## Event sourcing
-
-sourcing sourcing ensures that all changes to the application state are stored
-as a sequence of events. Not just can we query these events, we can also use
-these events to reconstruct past and current state.
+This is an experimental library that tries to bring the concepts from CQRS to Go. It
+currently focusses on adding event sourcing. Event sourcing ensures that all changes
+to the application state are stored as a sequence of events. Not just can we query
+these events, we can also use these events to reconstruct past and current state.
 
 ## Event sourcing example
 
