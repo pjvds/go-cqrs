@@ -41,17 +41,20 @@ func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 }
 
 func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
+	// The full history for the User domain object
 	history := sourcing.PackEvents([]sourcing.Event{
+		// It was first created
 		events.UserCreated{
 			Username: "pjvds",
 		},
+		// Then the username was changed
 		events.UsernameChanged{
 			OldUsername: "pjvds",
 			NewUsername: "wwwouter",
 		},
 	})
 
-	// Create a new domain object
+	// Create a new User domain object from history
 	user := domain.NewUserFromHistory(history)
 
 	c.Assert(user.Username, Not(Equals), "pjvds")
