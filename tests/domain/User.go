@@ -35,6 +35,11 @@ func NewUserFromHistory(history []sourcing.EventEnvelope) *User {
 	return user
 }
 
+// Disposes the user object and detach user from event sourcing context.
+func (user *User) Dispose() {
+	sourcing.Detach(user)
+}
+
 // Change the username to a new name.
 func (user *User) ChangeUsername(username string) error {
 	// Validate username
