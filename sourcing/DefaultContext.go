@@ -12,7 +12,7 @@ func AttachFromHistory(source interface{}, history []EventEnvelope) EventSource 
 	return defaultContext.AttachFromHistory(source, history)
 }
 
-func GetState(source interface{}) EventSourceState {
+func GetState(source interface{}) EventSource {
 	return defaultContext.GetState(source)
 }
 

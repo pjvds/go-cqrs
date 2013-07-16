@@ -45,7 +45,7 @@ func (ctx *Context) AttachFromHistory(source interface{}, history []EventEnvelop
 	return eventSource
 }
 
-func (ctx *Context) GetState(source interface{}) EventSourceState {
+func (ctx *Context) GetState(source interface{}) EventSource {
 	state, ok := ctx.sources[source]
 	if ok {
 		return state

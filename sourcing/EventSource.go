@@ -4,13 +4,10 @@ import (
 	"time"
 )
 
-type EventSourceState interface {
-	Events() []EventEnvelope
-}
-
 type EventSource interface {
 	Id() EventSourceId
 	Apply(event Event)
+	Events() []EventEnvelope
 }
 
 type eventSource struct {
