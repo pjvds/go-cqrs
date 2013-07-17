@@ -42,7 +42,8 @@ func createEventHandlersForType(namer EventNamer, sourceType reflect.Type) Handl
 	handlers := make(HandlersMap)
 
 	// Loop through all the methods of the source
-	for i := 0; i < sourceType.NumMethod(); i++ {
+	methodCount := sourceType.NumMethod()
+	for i := 0; i < methodCount; i++ {
 		method := sourceType.Method(i)
 
 		// Only match methods that satisfy prefix
