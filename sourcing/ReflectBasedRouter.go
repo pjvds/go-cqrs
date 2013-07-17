@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	MethodHandlerPrefix = "Handle"
+	methodHandlerPrefix = "Handle"
 	cache               map[reflect.Type]HandlersMap
 )
 
@@ -46,7 +46,7 @@ func createEventHandlersForType(namer EventNamer, sourceType reflect.Type) Handl
 		method := sourceType.Method(i)
 
 		// Only match methods that satisfy prefix
-		if strings.HasPrefix(method.Name, MethodHandlerPrefix) {
+		if strings.HasPrefix(method.Name, methodHandlerPrefix) {
 			// Handling methods are defined in code by:
 			//   func (source *MySource) HandleMyEvent(e MyEvent).
 			// When getting the type of this methods by reflection the signature
