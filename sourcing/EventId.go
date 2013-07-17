@@ -4,18 +4,18 @@ import (
 	"github.com/nu7hatch/gouuid"
 )
 
-type EventSourceId uuid.UUID
+type EventId uuid.UUID
 
-func NewEventSourceId() EventSourceId {
+func NewEventId() EventId {
 	guid, err := uuid.NewV4()
 	if err != nil {
 		panic(err)
 	}
 
-	return EventSourceId(*guid)
+	return EventId(*guid)
 }
 
-func (id EventSourceId) String() string {
+func (id EventId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
 }

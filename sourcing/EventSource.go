@@ -36,6 +36,7 @@ func (source *eventSource) Events() []EventEnvelope {
 func (source *eventSource) Apply(event Event) {
 	envelope := EventEnvelope{
 		EventSourceId: source.Id(),
+		EventId:       NewEventId(),
 		Name:          source.eventNamer.GetEventName(event),
 		Timestamp:     time.Now(),
 		Payload:       event,

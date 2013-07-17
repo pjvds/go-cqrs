@@ -7,15 +7,17 @@ import (
 // Holds the meta information for an event.
 type EventEnvelope struct {
 	EventSourceId EventSourceId
+	EventId       EventId
 	Name          EventName
 	Sequence      EventSequence
 	Timestamp     time.Time
 	Payload       Event
 }
 
-func NewEventEnvelope(eventSourceId EventSourceId, name EventName, sequence EventSequence, timestamp time.Time, payload Event) *EventEnvelope {
+func NewEventEnvelope(eventSourceId EventSourceId, eventId EventId, name EventName, sequence EventSequence, timestamp time.Time, payload Event) *EventEnvelope {
 	return &EventEnvelope{
 		EventSourceId: eventSourceId,
+		EventId:       eventId,
 		Name:          name,
 		Sequence:      sequence,
 		Timestamp:     timestamp,
