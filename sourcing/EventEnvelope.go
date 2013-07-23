@@ -1,17 +1,18 @@
 package sourcing
 
 import (
+	"fmt"
 	"time"
 )
 
 // Holds the meta information for an event.
 type EventEnvelope struct {
-	EventSourceId EventSourceId
-	EventId       EventId
-	Name          EventName
-	Sequence      EventSequence
-	Timestamp     time.Time
-	Payload       Event
+	EventSourceId EventSourceId // The id of the source that owns this event
+	EventId       EventId       // The id of the event itself
+	Name          EventName     // The event name, this value is also used for type identification (maps name to Go type)
+	Sequence      EventSequence // The sequence of the event which starts at zero.
+	Timestamp     time.Time     // The point in time when this event happened.
+	Payload       Event         // The data of the event.
 }
 
 func NewEventEnvelope(eventSourceId EventSourceId, eventId EventId, name EventName, sequence EventSequence, timestamp time.Time, payload Event) *EventEnvelope {
@@ -26,7 +27,7 @@ func NewEventEnvelope(eventSourceId EventSourceId, eventId EventId, name EventNa
 }
 
 func (e *EventEnvelope) String() string {
-	return e.Name.String()
+	return fmt.Sprintf("%v/%v", e.Sequence, e.Name)
 }
 
 func PackEvents(events []Event) []EventEnvelope {
