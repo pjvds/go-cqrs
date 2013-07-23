@@ -14,12 +14,6 @@ type Context struct {
 	namer   EventNamer
 }
 
-type SourceState struct {
-	Events  []EventEnvelope
-	applier EventHandler
-	router  EventRouter
-}
-
 func (ctx *Context) attach(id EventSourceId, source interface{}) EventSource {
 	namer := ctx.namer
 	router := NewReflectBasedRouter(ctx.namer, source)
