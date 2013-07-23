@@ -17,8 +17,9 @@ type HandlersMap map[EventName]func(source interface{}, event Event)
 //
 // The convention is: func(s MySource) HandleXXX(e EventType)
 type ReflectBasedRouter struct {
-	handlers HandlersMap
-	source   interface{}
+	handlers   HandlersMap
+	source     interface{}
+	sourceType reflect.Type
 }
 
 func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
@@ -33,8 +34,9 @@ func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
 	}
 
 	return &ReflectBasedRouter{
-		handlers: handlers,
-		source:   source,
+		handlers:   handlers,
+		source:     source,
+		sourceType: sourceType,
 	}
 }
 
@@ -57,8 +59,6 @@ func createEventHandlersForType(namer EventNamer, sourceType reflect.Type) Handl
 				handler := createEventHandler(method)
 				eventName := namer.GetEventNameFromType(method.Type.In(1))
 				handlers[eventName] = handler
-
-				Log.Debug("Registered %v as event handler for %v", method.Type.String(), eventName)
 			}
 		}
 	}
@@ -82,6 +82,6 @@ func (router *ReflectBasedRouter) Route(e EventEnvelope) {
 	if handler, ok := router.handlers[e.Name]; ok {
 		handler(router.source, e.Payload)
 	} else {
-		Log.Error("No handler found for event: %v", e.Name)
+		Log.Error("No handler found for event: %v in %v", e.Name, router.sourceType.String())
 	}
 }
