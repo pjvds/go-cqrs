@@ -81,6 +81,54 @@ func (store *EventStore) OpenStream(eventSourceId sourcing.EventSourceId) ([]*so
 		return nil, err
 	}
 
+	result := make([]*sourcing.EventEnvelope, 0)
+	page, err := processFeed(feed)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, i := range page {
+		result = append(result, i)
+	}
+	links := linksToMap(feed.Links)
+
+	for _, l := range feed.Links {
+		Log.Notice("Link: %v -> %v", l.Rel, l.Href)
+	}
+
+	next, ok := links["next"]
+	for ok {
+		Log.Notice("NEXT: %v", next)
+		feed, err = feeds.DownloadAtomFeed(next)
+		if err != nil {
+			return nil, err
+		}
+
+		page, err = processFeed(feed)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, i := range page {
+			result = append(result, i)
+		}
+		links = linksToMap(feed.Links)
+		next, ok = links["next"]
+	}
+
+	return result, nil
+}
+
+func linksToMap(links []*feeds.AtomLink) map[string]string {
+	m := make(map[string]string, len(links))
+	for _, link := range links {
+		m[link.Rel] = link.Href
+	}
+
+	return m
+}
+
+func processFeed(feed *feeds.AtomFeed) ([]*sourcing.EventEnvelope, error) {
 	result := make([]*sourcing.EventEnvelope, len(feed.Entries))
 	for index, entry := range feed.Entries {
 		alternateLink := entry.Links[1]
