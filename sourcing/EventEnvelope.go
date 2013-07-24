@@ -30,14 +30,13 @@ func (e *EventEnvelope) String() string {
 	return fmt.Sprintf("%v/%v", e.Sequence, e.Name)
 }
 
-func PackEvents(events []Event) []EventEnvelope {
-	envelopes := make([]EventEnvelope, len(events))
+func PackEvents(eventSourceId EventSourceId, events []Event) []*EventEnvelope {
+	envelopes := make([]*EventEnvelope, len(events))
 
 	for index, event := range events {
-		envelopes[index] = EventEnvelope{
-			Name:    defaultContext.namer.GetEventName(event),
-			Payload: event,
-		}
+		envelopes[index] = NewEventEnvelope(eventSourceId, NewEventId(),
+			defaultContext.namer.GetEventName(event), NewEventSequence(int64(index)),
+			time.Now(), event)
 	}
 
 	return envelopes
