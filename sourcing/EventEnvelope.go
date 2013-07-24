@@ -7,12 +7,12 @@ import (
 
 // Holds the meta information for an event.
 type EventEnvelope struct {
-	EventSourceId EventSourceId // The id of the source that owns this event
-	EventId       EventId       // The id of the event itself
-	Name          EventName     // The event name, this value is also used for type identification (maps name to Go type)
-	Sequence      EventSequence // The sequence of the event which starts at zero.
-	Timestamp     time.Time     // The point in time when this event happened.
-	Payload       Event         // The data of the event.
+	EventSourceId EventSourceId `json:"eventSourceId"` // The id of the source that owns this event
+	EventId       EventId       `json:"eventId"`       // The id of the event itself
+	Name          EventName     `json:"name"`          // The event name, this value is also used for type identification (maps name to Go type)
+	Sequence      EventSequence `json:"sequence"`      // The sequence of the event which starts at zero.
+	Timestamp     time.Time     `json:"timestamp"`     // The point in time when this event happened.
+	Payload       Event         `json:"payload"`       // The data of the event.
 }
 
 func NewEventEnvelope(eventSourceId EventSourceId, eventId EventId, name EventName, sequence EventSequence, timestamp time.Time, payload Event) *EventEnvelope {
@@ -26,6 +26,7 @@ func NewEventEnvelope(eventSourceId EventSourceId, eventId EventId, name EventNa
 	}
 }
 
+// Returns a string representation of the EventEnvelope in the "{sequence}/{eventname}" format.
 func (e *EventEnvelope) String() string {
 	return fmt.Sprintf("%v/%v", e.Sequence, e.Name)
 }

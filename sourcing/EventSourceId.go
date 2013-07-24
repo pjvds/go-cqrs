@@ -19,3 +19,20 @@ func (id EventSourceId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
 }
+
+func (id EventSourceId) MarshalJSON() ([]byte, error) {
+	value := uuid.UUID(id)
+	return value.MarshalJSON()
+}
+
+func (id *EventSourceId) UnmarshalJSON(b []byte) error {
+	value := uuid.UUID(*id)
+	err := value.UnmarshalJSON(b)
+	if err != nil {
+		return err
+	}
+
+	eventSourceId := EventSourceId(value)
+	id = &eventSourceId
+	return nil
+}
