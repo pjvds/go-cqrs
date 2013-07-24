@@ -17,7 +17,7 @@ type EventNamerTestSuite struct {
 // Setup the test suite
 var _ = Suite(&EventNamerTestSuite{})
 
-type MyEvent struct {
+type myEvent struct {
 	Foo string
 	Bar int
 }
@@ -28,7 +28,7 @@ func (s *EventNamerTestSuite) TestNewTypeEventNamerReturnsValue(c *C) {
 }
 
 func (s *EventNamerTestSuite) TestGetEventName(c *C) {
-	event := MyEvent{
+	event := myEvent{
 		Foo: "baz",
 		Bar: 42,
 	}
@@ -36,5 +36,5 @@ func (s *EventNamerTestSuite) TestGetEventName(c *C) {
 	result := NewTypeEventNamer()
 	name := result.GetEventName(event)
 
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/sourcing/MyEvent"))
+	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/sourcing/myEvent"))
 }
