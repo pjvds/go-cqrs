@@ -1,11 +1,12 @@
 package eventstore
 
 import (
+	"fmt"
 	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/tests/domain"
-	//"github.com/pjvds/go-cqrs/tests/events"
-	"fmt"
+	"github.com/pjvds/go-cqrs/tests/events"
 	. "launchpad.net/gocheck"
+	"reflect"
 	"testing"
 )
 
@@ -25,6 +26,15 @@ var _ = Suite(&EventStoreTestSuite{})
 
 func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 	register := sourcing.NewEventTypeRegister()
+	namer := sourcing.NewTypeEventNamer()
+
+	userCreatedType := reflect.TypeOf(events.UserCreated{})
+	userCreatedName := namer.GetEventNameFromType(userCreatedType)
+	register.Register(userCreatedName, userCreatedType)
+
+	usernameChangedType := reflect.TypeOf(events.UsernameChanged{})
+	usernameChangedName := namer.GetEventNameFromType(usernameChangedType)
+	register.Register(usernameChangedName, usernameChangedType)
 
 	store, _ := DailEventStore("http://localhost:2113", register)
 	s.store = store
