@@ -52,11 +52,8 @@ func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	c.Assert(err, IsNil)
 
 	events, err := s.store.OpenStream(state.Id())
-
-	for i, e := range events {
-		Log.Notice("%v: %v", i, e.Payload)
-	}
-
 	c.Assert(err, IsNil)
 	c.Assert(len(events), Equals, 100)
+
+	c.Assert(events[0].EventSourceId, Equals, state.Id())
 }
