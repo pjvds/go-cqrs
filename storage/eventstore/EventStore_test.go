@@ -33,7 +33,7 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
 	user := domain.NewUser("pjvds")
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 99; i++ {
 		user.ChangeUsername(fmt.Sprintf("pjvds%v", i))
 	}
 
@@ -42,6 +42,11 @@ func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	c.Assert(err, IsNil)
 
 	events, err := s.store.OpenStream(state.Id())
+
+	for i, e := range events {
+		Log.Notice("%v: %v", i, e.Payload)
+	}
+
 	c.Assert(err, IsNil)
 	c.Assert(len(events), Equals, 100)
 }
