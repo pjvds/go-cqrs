@@ -41,8 +41,10 @@ func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 }
 
 func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
+	sourceId, _ := sourcing.ParseEventSourceId("0791d279-664d-458e-bf60-567ade140832")
+
 	// The full history for the User domain object
-	history := sourcing.PackEvents(sourcing.NewEventSourceId(), []sourcing.Event{
+	history := []sourcing.Event{
 		// It was first created
 		events.UserCreated{
 			Username: "pjvds",
@@ -52,10 +54,10 @@ func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 			OldUsername: "pjvds",
 			NewUsername: "wwwouter",
 		},
-	})
+	}
 
 	// Create a new User domain object from history
-	user := domain.NewUserFromHistory(history)
+	user := domain.NewUserFromHistory(sourceId, history)
 
 	c.Assert(user.Username, Not(Equals), "pjvds")
 	c.Assert(user.Username, Equals, "wwwouter")
@@ -63,7 +65,8 @@ func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 
 func (s *AppTestSuite) BenchmarkRebuildUserFromHistory(c *C) {
 	// The full history for the User domain object
-	history := sourcing.PackEvents(sourcing.NewEventSourceId(), []sourcing.Event{
+	sourceId, _ := sourcing.ParseEventSourceId("0791d279-664d-458e-bf60-567ade140832")
+	history := []sourcing.Event{
 		// It was first created
 		events.UserCreated{
 			Username: "pjvds",
@@ -73,11 +76,11 @@ func (s *AppTestSuite) BenchmarkRebuildUserFromHistory(c *C) {
 			OldUsername: "pjvds",
 			NewUsername: "wwwouter",
 		},
-	})
+	}
 
 	for i := 0; i < c.N; i++ {
 		// Create a new User domain object from history
-		user := domain.NewUserFromHistory(history)
+		user := domain.NewUserFromHistory(sourceId, history)
 		user.Dispose()
 	}
 }

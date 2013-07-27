@@ -15,6 +15,15 @@ func NewEventSourceId() EventSourceId {
 	return EventSourceId(*guid)
 }
 
+func ParseEventSourceId(value string) (id EventSourceId, err error) {
+	guid := new(uuid.UUID)
+	if guid, err = uuid.ParseHex(value); err == nil {
+		id = EventSourceId(*guid)
+	}
+
+	return
+}
+
 func (id EventSourceId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
