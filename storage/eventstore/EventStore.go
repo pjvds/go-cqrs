@@ -26,9 +26,9 @@ func DailEventStore(url string, register *sourcing.EventTypeRegister) (*EventSto
 }
 
 type Event struct {
-	EventId   string      `json:"eventId"`
-	EventType string      `json:"eventType"`
-	Data      interface{} `json:"data"`
+	EventId   string                 `json:"eventId"`
+	EventType string                 `json:"eventType"`
+	Data      sourcing.EventEnvelope `json:"data"`
 }
 
 func (store *EventStore) NewStream(source sourcing.EventSource) error {
@@ -145,7 +145,15 @@ func processFeed(feed *feeds.AtomFeed) ([]*sourcing.EventEnvelope, error) {
 }
 
 func downloadEvent(url string) (*sourcing.EventEnvelope, error) {
-	response, err := http.Get(url)
+	r, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	r.Header.Add("Accept", "application/json")
+	c := http.Client{}
+
+	response, err := c.Do(r)
 	if err != nil {
 		return nil, err
 	}
