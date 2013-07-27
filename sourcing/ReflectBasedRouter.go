@@ -56,7 +56,7 @@ func createEventHandlersForType(sourceType reflect.Type) handlersMap {
 			// is as following:
 			//   func HandleMyEvent(source *MySource, e MyEvent).
 			if method.Type.NumIn() == 2 {
-				eventType := method.Type.In(2)
+				eventType := method.Type.In(1)
 				handler := createEventHandler(method)
 				handlers[eventType] = handler
 			}

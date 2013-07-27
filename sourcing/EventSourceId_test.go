@@ -3,7 +3,6 @@ package sourcing
 import (
 	"encoding/json"
 	. "launchpad.net/gocheck"
-	"testing"
 )
 
 // The state for the test suite

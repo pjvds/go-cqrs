@@ -49,12 +49,10 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 	}
 
 	body, _ := json.Marshal(&data)
-	Log.Debug("Posting body to new stream: %v", string(body))
-
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
-		Log.Error("Error while posting new stream request: %v", err)
+		Log.Error("Error while posting new stream request: %v\n\tbody: %v", err, string(body))
 		return err
 	}
 

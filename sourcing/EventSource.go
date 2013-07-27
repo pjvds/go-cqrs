@@ -5,12 +5,11 @@ import ()
 type EventSource interface {
 	Id() EventSourceId
 	Apply(event Event)
-	Events() []Event
+	Events() []*Event
 }
 
 type eventSource struct {
 	id       EventSourceId
-	events   []Event
 	applier  EventRouter
 	recorder *EventRecorder
 }
@@ -27,8 +26,8 @@ func (source *eventSource) Id() EventSourceId {
 	return source.id
 }
 
-func (source *eventSource) Events() []Event {
-	return source.events
+func (source *eventSource) Events() []*Event {
+	return source.recorder.events
 }
 
 func (source *eventSource) Apply(event Event) {
