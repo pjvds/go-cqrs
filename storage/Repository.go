@@ -15,9 +15,10 @@ type Repository struct {
 	backend RepositoryBackend
 }
 
-func NewRepository() *Repository {
+func NewRepository(backend RepositoryBackend) *Repository {
 	return &Repository{
-		namer: NewTypeEventNamer(),
+		namer:   NewTypeEventNamer(),
+		backend: backend,
 	}
 }
 

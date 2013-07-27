@@ -4,13 +4,6 @@ import (
 	. "launchpad.net/gocheck"
 )
 
-// The state for the test suite
-type EventNamerTestSuite struct {
-}
-
-// Setup the test suite
-var _ = Suite(&EventNamerTestSuite{})
-
 type myEvent struct {
 	Foo string
 	Bar int
@@ -30,5 +23,5 @@ func (s *EventNamerTestSuite) TestGetEventName(c *C) {
 	result := NewTypeEventNamer()
 	name := result.GetEventName(event)
 
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/sourcing/myEvent"))
+	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
 }

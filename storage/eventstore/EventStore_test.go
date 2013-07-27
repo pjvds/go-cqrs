@@ -3,6 +3,7 @@ package eventstore
 import (
 	"fmt"
 	"github.com/pjvds/go-cqrs/sourcing"
+	"github.com/pjvds/go-cqrs/storage"
 	"github.com/pjvds/go-cqrs/tests/domain"
 	"github.com/pjvds/go-cqrs/tests/events"
 	. "launchpad.net/gocheck"
@@ -18,7 +19,8 @@ func Test(t *testing.T) {
 
 // The state for the test suite
 type EventStoreTestSuite struct {
-	store *EventStore
+	store      *EventStore
+	repository storage.Repository
 }
 
 // Setup the test suite
@@ -38,17 +40,19 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 
 	store, _ := DailEventStore("http://localhost:2113", register)
 	s.store = store
+
+	s.repository = storage.NewRepository(s.store)
 }
 
 func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
 	user := domain.NewUser("pjvds")
-	for i := 0; i < 99; i++ {
+	for i := 0; i < 25; i++ {
 		user.ChangeUsername(fmt.Sprintf("pjvds%v", i))
 	}
 
 	state := sourcing.GetState(user)
-	err := s.store.NewStream(state)
+	err := s.repository.Add(state)
 	c.Assert(err, IsNil)
 
 	events, err := s.store.OpenStream(state.Id())
