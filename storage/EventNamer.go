@@ -1,11 +1,12 @@
 package storage
 
 import (
+	"github.com/pjvds/go-cqrs/sourcing"
 	"reflect"
 )
 
 type EventNamer interface {
-	GetEventName(e Event) EventName
+	GetEventName(e sourcing.Event) EventName
 	GetEventNameFromType(eventType reflect.Type) EventName
 }
 
@@ -16,7 +17,7 @@ func NewTypeEventNamer() *TypeEventNamer {
 type TypeEventNamer struct {
 }
 
-func (namer *TypeEventNamer) GetEventName(e Event) EventName {
+func (namer *TypeEventNamer) GetEventName(e sourcing.Event) EventName {
 	t := reflect.TypeOf(e)
 	return namer.GetEventNameFromType(t)
 }

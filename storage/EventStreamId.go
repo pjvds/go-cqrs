@@ -1,38 +1,38 @@
-package sourcing
+package storage
 
 import (
 	"github.com/pjvds/gouuid"
 )
 
-type EventId uuid.UUID
+type EventStreamId uuid.UUID
 
-func NewEventId() EventId {
+func NewEventStreamId() EventStreamId {
 	guid, err := uuid.NewV4()
 	if err != nil {
 		panic(err)
 	}
 
-	return EventId(*guid)
+	return EventStreamId(*guid)
 }
 
-func (id EventId) String() string {
+func (id EventStreamId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
 }
 
-func (id EventId) MarshalJSON() ([]byte, error) {
+func (id EventStreamId) MarshalJSON() ([]byte, error) {
 	value := uuid.UUID(id)
 	return value.MarshalJSON()
 }
 
-func (id *EventId) UnmarshalJSON(b []byte) error {
+func (id *EventStreamId) UnmarshalJSON(b []byte) error {
 	value := uuid.UUID(*id)
 	err := value.UnmarshalJSON(b)
 	if err != nil {
 		return err
 	}
 
-	eventId := EventId(value)
+	eventId := EventStreamId(value)
 	id = &eventId
 	return nil
 }
