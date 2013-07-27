@@ -1,5 +1,5 @@
 package sourcing
 
 type EventRouter interface {
-	Route(e EventEnvelope)
+	Route(e Event)
 }

@@ -10,7 +10,7 @@ var (
 	cache               map[reflect.Type]HandlersMap
 )
 
-type HandlersMap map[EventName]func(source interface{}, event Event)
+type HandlersMap map[reflect.Type]func(source interface{}, event Event)
 
 // Routes events to methods of an struct by convention. There should be one
 // router per event source instance.
@@ -22,7 +22,7 @@ type ReflectBasedRouter struct {
 	sourceType reflect.Type
 }
 
-func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
+func NewReflectBasedRouter(source interface{}) EventRouter {
 	sourceType := reflect.TypeOf(source)
 
 	var handlers HandlersMap
@@ -30,7 +30,7 @@ func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
 		handlers = value
 	} else {
 		// TODO: Now namer could change between entries
-		handlers = createEventHandlersForType(namer, sourceType)
+		handlers = createEventHandlersForType(sourceType)
 	}
 
 	return &ReflectBasedRouter{
@@ -40,7 +40,7 @@ func NewReflectBasedRouter(namer EventNamer, source interface{}) EventRouter {
 	}
 }
 
-func createEventHandlersForType(namer EventNamer, sourceType reflect.Type) HandlersMap {
+func createEventHandlersForType(sourceType reflect.Type) HandlersMap {
 	handlers := make(HandlersMap)
 
 	// Loop through all the methods of the source
@@ -56,9 +56,9 @@ func createEventHandlersForType(namer EventNamer, sourceType reflect.Type) Handl
 			// is as following:
 			//   func HandleMyEvent(source *MySource, e MyEvent).
 			if method.Type.NumIn() == 2 {
+				eventType := method.Type.In(2)
 				handler := createEventHandler(method)
-				eventName := namer.GetEventNameFromType(method.Type.In(1))
-				handlers[eventName] = handler
+				handlers[eventType] = handler
 			}
 		}
 	}
@@ -76,12 +76,13 @@ func createEventHandler(method reflect.Method) func(interface{}, Event) {
 	}
 }
 
-func (router *ReflectBasedRouter) Route(e EventEnvelope) {
+func (router *ReflectBasedRouter) Route(e Event) {
 	Log.Debug("Routing %+v", e)
 
-	if handler, ok := router.handlers[e.Name]; ok {
-		handler(router.source, e.Payload)
+	eventType := reflect.TypeOf(e)
+	if handler, ok := router.handlers[eventType]; ok {
+		handler(router.source, e)
 	} else {
-		Log.Error("No handler found for event: %v in %v", e.Name, router.sourceType.String())
+		Log.Error("No handler found for event: %v in %v", eventType.String(), router.sourceType.String())
 	}
 }

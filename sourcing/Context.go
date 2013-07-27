@@ -19,7 +19,7 @@ type Context struct {
 
 func (ctx *Context) attach(id EventSourceId, source interface{}) EventSource {
 	namer := ctx.namer
-	router := NewReflectBasedRouter(ctx.namer, source)
+	router := NewReflectBasedRouter(source)
 
 	eventSource := newEventSource(id, namer, router)
 
@@ -34,12 +34,11 @@ func (ctx *Context) AttachNew(source interface{}) EventSource {
 
 // Creates an existing EventSource object based on the state from the history
 // are replays history so the specified source can update it's state.
-func (ctx *Context) AttachFromHistory(source interface{}, history []EventEnvelope) EventSource {
-	id := history[0].EventSourceId
+func (ctx *Context) AttachFromHistory(source interface{}, id EventSourceId, history []Event) EventSource {
 	eventSource := ctx.attach(id, source)
 
 	for _, event := range history {
-		eventSource.Apply(event.Payload)
+		eventSource.Apply(event)
 	}
 
 	return eventSource

@@ -8,8 +8,8 @@ func AttachNew(source interface{}) EventSource {
 	return defaultContext.AttachNew(source)
 }
 
-func AttachFromHistory(source interface{}, history []EventEnvelope) EventSource {
-	return defaultContext.AttachFromHistory(source, history)
+func AttachFromHistory(source interface{}, id EventSourceId, history []Event) EventSource {
+	return defaultContext.AttachFromHistory(source, id, history)
 }
 
 func GetState(source interface{}) EventSource {
