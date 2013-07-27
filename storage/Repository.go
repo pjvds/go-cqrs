@@ -8,6 +8,7 @@ import (
 
 type RepositoryBackend interface {
 	WriteStream(change *EventStreamChange) error
+	ReadStream(streamId EventStreamId) ([]*Event, error)
 }
 
 type Repository struct {
@@ -29,6 +30,19 @@ func (r *Repository) Add(source sourcing.EventSource) error {
 	}
 
 	return r.backend.WriteStream(change)
+}
+
+func (r *Repository) Get(sourceId sourcing.EventSourceId, source sourcing.EventSource) error {
+	events, err := r.backend.ReadStream(EventStreamId(source.Id()))
+	if err != nil {
+		return err
+	}
+
+	for _, e := range events {
+		source.Apply(e)
+	}
+
+	return nil
 }
 
 func (r *Repository) getStreamChangeFromSource(source sourcing.EventSource) (*EventStreamChange, error) {

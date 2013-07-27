@@ -46,18 +46,16 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 
 func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
-	user := domain.NewUser("pjvds")
+	toStore := domain.NewUser("pjvds")
 	for i := 0; i < 25; i++ {
-		user.ChangeUsername(fmt.Sprintf("pjvds%v", i))
+		toStore.ChangeUsername(fmt.Sprintf("pjvds%v", i))
 	}
 
-	state := sourcing.GetState(user)
+	state := sourcing.GetState(toStore)
 	err := s.repository.Add(state)
 	c.Assert(err, IsNil)
 
-	// events, err := s.store.OpenStream(state.Id())
-	// c.Assert(err, IsNil)
-	// c.Assert(len(events), Equals, 100)
-
-	// c.Assert(events[0].EventSourceId, Equals, state.Id())
+	events, err := s.store.ReadStream(storage.EventStreamId(state.Id()))
+	c.Assert(err, IsNil)
+	c.Assert(len(events), Equals, 26)
 }

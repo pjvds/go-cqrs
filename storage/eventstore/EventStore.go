@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	//"github.com/gorilla/feeds"
+	"github.com/gorilla/feeds"
 	"github.com/pjvds/go-cqrs/storage"
 	"net/http"
 	"net/url"
@@ -67,99 +67,97 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 	return nil
 }
 
-// func (store *EventStore) OpenStream(eventSourceId sourcing.EventSourceId) ([]*sourcing.EventEnvelope, error) {
-// 	streamId := url.QueryEscape(eventSourceId.String())
+func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.Event, error) {
+	// Example: http://localhost:2113/streams/1b826790-5d4e-4227-7dc4-017ed73d30ac/head/backward/20
+	url := fmt.Sprintf("%v/streams/%v/head/backward/%v", store.baseUrl, streamId.String(), store.PageSize)
 
-// 	// Example: http://localhost:2113/streams/1b826790-5d4e-4227-7dc4-017ed73d30ac/head/backward/20
-// 	url := fmt.Sprintf("%v/streams/%v/head/backward/%v", store.baseUrl, streamId, store.PageSize)
+	feed, err := feeds.DownloadAtomFeed(url)
+	if err != nil {
+		return nil, err
+	}
 
-// 	feed, err := feeds.DownloadAtomFeed(url)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	events := make([]*storage.Event, 0)
+	page, err := processFeed(feed)
+	if err != nil {
+		return nil, err
+	}
 
-// 	result := make([]*sourcing.EventEnvelope, 0)
-// 	page, err := processFeed(feed)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	for _, i := range page {
+		events = append(events, i)
+	}
+	links := linksToMap(feed.Links)
 
-// 	for _, i := range page {
-// 		result = append(result, i)
-// 	}
-// 	links := linksToMap(feed.Links)
+	for _, l := range feed.Links {
+		Log.Notice("Link: %v -> %v", l.Rel, l.Href)
+	}
 
-// 	for _, l := range feed.Links {
-// 		Log.Notice("Link: %v -> %v", l.Rel, l.Href)
-// 	}
+	next, ok := links["next"]
+	for ok {
+		Log.Notice("NEXT: %v", next)
+		feed, err = feeds.DownloadAtomFeed(next)
+		if err != nil {
+			return nil, err
+		}
 
-// 	next, ok := links["next"]
-// 	for ok {
-// 		Log.Notice("NEXT: %v", next)
-// 		feed, err = feeds.DownloadAtomFeed(next)
-// 		if err != nil {
-// 			return nil, err
-// 		}
+		page, err = processFeed(feed)
+		if err != nil {
+			return nil, err
+		}
 
-// 		page, err = processFeed(feed)
-// 		if err != nil {
-// 			return nil, err
-// 		}
+		for _, i := range page {
+			events = append(events, i)
+		}
+		links = linksToMap(feed.Links)
+		next, ok = links["next"]
+	}
 
-// 		for _, i := range page {
-// 			result = append(result, i)
-// 		}
-// 		links = linksToMap(feed.Links)
-// 		next, ok = links["next"]
-// 	}
+	return events, nil
+}
 
-// 	return result, nil
-// }
+func linksToMap(links []*feeds.AtomLink) map[string]string {
+	m := make(map[string]string, len(links))
+	for _, link := range links {
+		m[link.Rel] = link.Href
+	}
 
-// func linksToMap(links []*feeds.AtomLink) map[string]string {
-// 	m := make(map[string]string, len(links))
-// 	for _, link := range links {
-// 		m[link.Rel] = link.Href
-// 	}
+	return m
+}
 
-// 	return m
-// }
+func processFeed(feed *feeds.AtomFeed) ([]*storage.Event, error) {
+	result := make([]*storage.Event, len(feed.Entries))
+	for index, entry := range feed.Entries {
+		alternateLink := entry.Links[1]
+		eventUrl := alternateLink.Href
 
-// func processFeed(feed *feeds.AtomFeed) ([]*sourcing.Event, error) {
-// 	result := make([]*sourcing.EventEnvelope, len(feed.Entries))
-// 	for index, entry := range feed.Entries {
-// 		alternateLink := entry.Links[1]
-// 		eventUrl := alternateLink.Href
+		event, err := downloadEvent(eventUrl)
+		if err != nil {
+			return nil, err
+		}
+		result[index] = event
+	}
 
-// 		eventEnvelope, err := downloadEvent(eventUrl)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		result[index] = eventEnvelope
-// 	}
+	return result, nil
+}
 
-// 	return result, nil
-// }
+func downloadEvent(url string) (*storage.Event, error) {
+	r, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
 
-// func downloadEvent(url string) (*sourcing.EventEnvelope, error) {
-// 	r, err := http.NewRequest("GET", url, nil)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	r.Header.Add("Accept", "application/json")
+	c := http.Client{}
 
-// 	r.Header.Add("Accept", "application/json")
-// 	c := http.Client{}
+	response, err := c.Do(r)
+	if err != nil {
+		return nil, err
+	}
 
-// 	response, err := c.Do(r)
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	decoder := json.NewDecoder(response.Body)
+	defer response.Body.Close()
 
-// 	decoder := json.NewDecoder(response.Body)
-// 	defer response.Body.Close()
+	result := new(storage.Event)
+	err = decoder.Decode(result)
 
-// 	result := new(sourcing.EventEnvelope)
-// 	err = decoder.Decode(result)
-
-// 	return result, err
-// }
+	return result, err
+}
