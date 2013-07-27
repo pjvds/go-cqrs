@@ -128,7 +128,7 @@ func linksToMap(links []*feeds.AtomLink) map[string]string {
 	return m
 }
 
-func processFeed(feed *feeds.AtomFeed) ([]*sourcing.EventEnvelope, error) {
+func processFeed(feed *feeds.AtomFeed) ([]*sourcing.Event, error) {
 	result := make([]*sourcing.EventEnvelope, len(feed.Entries))
 	for index, entry := range feed.Entries {
 		alternateLink := entry.Links[1]

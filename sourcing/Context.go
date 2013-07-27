@@ -5,7 +5,6 @@ import ()
 func newDefaultContext() *Context {
 	return &Context{
 		sources: make(map[interface{}]*eventSource, 5),
-		namer:   NewTypeEventNamer(),
 	}
 }
 
@@ -14,14 +13,12 @@ func newDefaultContext() *Context {
 // anymore.
 type Context struct {
 	sources map[interface{}]*eventSource
-	namer   EventNamer
 }
 
 func (ctx *Context) attach(id EventSourceId, source interface{}) EventSource {
-	namer := ctx.namer
 	router := NewReflectBasedRouter(source)
 
-	eventSource := newEventSource(id, namer, router)
+	eventSource := newEventSource(id, router)
 
 	ctx.sources[source] = eventSource
 	return eventSource

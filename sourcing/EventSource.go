@@ -9,17 +9,15 @@ type EventSource interface {
 }
 
 type eventSource struct {
-	id         EventSourceId
-	eventNamer EventNamer
-	events     []Event
-	router     EventRouter
+	id     EventSourceId
+	events []Event
+	router EventRouter
 }
 
-func newEventSource(id EventSourceId, eventNamer EventNamer, router EventRouter) *eventSource {
+func newEventSource(id EventSourceId, router EventRouter) *eventSource {
 	return &eventSource{
-		id:         id,
-		eventNamer: eventNamer,
-		router:     router,
+		id:     id,
+		router: router,
 	}
 }
 

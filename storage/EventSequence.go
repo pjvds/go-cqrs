@@ -1,4 +1,4 @@
-package sourcing
+package storage
 
 type EventSequence int64
 
