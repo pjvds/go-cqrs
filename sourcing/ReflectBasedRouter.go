@@ -7,17 +7,17 @@ import (
 
 var (
 	methodHandlerPrefix = "Handle"
-	cache               map[reflect.Type]HandlersMap
+	cache               map[reflect.Type]handlersMap
 )
 
-type HandlersMap map[reflect.Type]func(source interface{}, event Event)
+type handlersMap map[reflect.Type]func(source interface{}, event Event)
 
 // Routes events to methods of an struct by convention. There should be one
 // router per event source instance.
 //
 // The convention is: func(s MySource) HandleXXX(e EventType)
 type ReflectBasedRouter struct {
-	handlers   HandlersMap
+	handlers   handlersMap
 	source     interface{}
 	sourceType reflect.Type
 }
@@ -25,7 +25,7 @@ type ReflectBasedRouter struct {
 func NewReflectBasedRouter(source interface{}) EventRouter {
 	sourceType := reflect.TypeOf(source)
 
-	var handlers HandlersMap
+	var handlers handlersMap
 	if value, ok := cache[sourceType]; ok {
 		handlers = value
 	} else {
@@ -40,8 +40,8 @@ func NewReflectBasedRouter(source interface{}) EventRouter {
 	}
 }
 
-func createEventHandlersForType(sourceType reflect.Type) HandlersMap {
-	handlers := make(HandlersMap)
+func createEventHandlersForType(sourceType reflect.Type) handlersMap {
+	handlers := make(handlersMap)
 
 	// Loop through all the methods of the source
 	methodCount := sourceType.NumMethod()
