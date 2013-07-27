@@ -2,7 +2,6 @@ package storage
 
 import (
 	. "launchpad.net/gocheck"
-	"testing"
 )
 
 // The state for the test suite
