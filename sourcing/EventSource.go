@@ -9,15 +9,17 @@ type EventSource interface {
 }
 
 type eventSource struct {
-	id     EventSourceId
-	events []Event
-	router EventRouter
+	id       EventSourceId
+	events   []Event
+	applier  EventRouter
+	recorder *EventRecorder
 }
 
-func newEventSource(id EventSourceId, router EventRouter) *eventSource {
+func newEventSource(id EventSourceId, applier EventRouter) *eventSource {
 	return &eventSource{
-		id:     id,
-		router: router,
+		id:       id,
+		applier:  applier,
+		recorder: NewEventRecorder(),
 	}
 }
 
@@ -30,6 +32,6 @@ func (source *eventSource) Events() []Event {
 }
 
 func (source *eventSource) Apply(event Event) {
-	source.router.Route(event)
-	source.events = append(source.events, event)
+	source.applier.Route(event)
+	source.recorder.Record(&event)
 }
