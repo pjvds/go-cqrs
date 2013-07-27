@@ -26,29 +26,31 @@ func DailEventStore(url string, register *storage.EventTypeRegister) (*EventStor
 }
 
 type Event struct {
-	EventId   storage.EventId   `json:"eventId"`
-	EventType storage.EventName `json:"eventType"`
-	Data      []byte            `json:"data"`
+	EventId   string          `json:"eventId"`
+	EventType string          `json:"eventType"`
+	Data      json.RawMessage `json:"data"`
 }
 
 func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 	streamId := url.QueryEscape(change.StreamId.String())
 	url := fmt.Sprintf("%v/streams/%v", store.baseUrl, streamId)
-	Log.Debug("Creating new stream at %v", url)
 
 	events := change.Events
-	data := make([]Event, len(events))
+	data := make([]*Event, len(events))
+	Log.Debug("Creating new stream at %v for %v events", url, len(events))
 
 	for i := 0; i < len(events); i++ {
 		e := events[i]
-		data[i] = Event{
-			EventId:   e.EventId,
-			EventType: e.Name,
+		data[i] = &Event{
+			EventId:   e.EventId.String(),
+			EventType: e.Name.String(),
 			Data:      e.Data,
 		}
 	}
 
 	body, _ := json.Marshal(&data)
+	Log.Debug("Posting body to new stream: %v", string(body))
+
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
