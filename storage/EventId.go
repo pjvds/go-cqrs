@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/nu7hatch/gouuid"
+	"github.com/pjvds/gouuid"
 )
 
 type EventId uuid.UUID
