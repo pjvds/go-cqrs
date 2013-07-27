@@ -31,11 +31,11 @@ func (e *EventEnvelope) String() string {
 	return fmt.Sprintf("%v/%v", e.Sequence, e.Name)
 }
 
-func PackEvents(eventSourceId EventSourceId, events []Event) []*EventEnvelope {
-	envelopes := make([]*EventEnvelope, len(events))
+func PackEvents(eventSourceId EventSourceId, events []Event) []EventEnvelope {
+	envelopes := make([]EventEnvelope, len(events))
 
 	for index, event := range events {
-		envelopes[index] = NewEventEnvelope(eventSourceId, NewEventId(),
+		envelopes[index] = *NewEventEnvelope(eventSourceId, NewEventId(),
 			defaultContext.namer.GetEventName(event), NewEventSequence(int64(index)),
 			time.Now(), event)
 	}

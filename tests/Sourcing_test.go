@@ -42,7 +42,7 @@ func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 
 func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 	// The full history for the User domain object
-	history := sourcing.PackEvents([]sourcing.Event{
+	history := sourcing.PackEvents(sourcing.NewEventSourceId(), []sourcing.Event{
 		// It was first created
 		events.UserCreated{
 			Username: "pjvds",
@@ -63,7 +63,7 @@ func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 
 func (s *AppTestSuite) BenchmarkRebuildUserFromHistory(c *C) {
 	// The full history for the User domain object
-	history := sourcing.PackEvents([]sourcing.Event{
+	history := sourcing.PackEvents(sourcing.NewEventSourceId(), []sourcing.Event{
 		// It was first created
 		events.UserCreated{
 			Username: "pjvds",
