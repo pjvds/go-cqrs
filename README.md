@@ -18,8 +18,7 @@ c.Assert(user.Username, Equals, "pjvds")
 
 // We created a new user, this should be
 // captured by an event.
-state := sourcing.GetState(user)
-c.Assert(len(state.Events()), Equals, 1)
+c.Assert(len(user.Events()), Equals, 1)
 
 // Change the username of the user
 user.ChangeUsername("wwwouter")
@@ -27,14 +26,17 @@ c.Assert(user.Username, Equals, "wwwouter")
 
 // We changed the username, this should be
 // captured by an event.
-c.Assert(len(state.Events()), Equals, 2)
+c.Assert(len(user.Events()), Equals, 2)
 ```
 
 ### An object state can be rebuild from history
 
 ``` go
+// The id of our event source that we will rebuild from history.
+sourceId, _ := sourcing.ParseEventSourceId("0791d279-664d-458e-bf60-567ade140832")
+
 // The full history for the User domain object
-history := sourcing.PackEvents([]sourcing.Event{
+history := []sourcing.Event{
     // It was first created
     events.UserCreated{
         Username: "pjvds",
@@ -44,12 +46,15 @@ history := sourcing.PackEvents([]sourcing.Event{
         OldUsername: "pjvds",
         NewUsername: "wwwouter",
     },
-})
+}
 
 // Create a new User domain object from history
-user := domain.NewUserFromHistory(history)
+user := domain.NewUserFromHistory(sourceId, history)
 
+// It should not have the initial state.
 c.Assert(user.Username, Not(Equals), "pjvds")
+
+// It should have the latest state.
 c.Assert(user.Username, Equals, "wwwouter")
 ```
 
@@ -67,7 +72,8 @@ we will never update this username directly.
 // Holds the state of our user. Note that
 // state like Username is not updated directly!
 type User struct {
-    sourcer sourcing.EventSource
+    // Embed event source funtionality.
+    sourcing.EventSource
 
     Username string
 }
@@ -76,20 +82,18 @@ type User struct {
 ### Ctor
 
 The `User` has two constructor methods. One to create a new `User` and one that
-creates a `User` based on historical events. The first creates a `User` and
-raises the fact that this happend by applying an event. The later creates a
-`User` and replays history to build the state.
-
-In both contrustor methods the `User` object is attached to the `sourcing`
-context and the sourcer object is stored inside the `User`.
+creates a `User` based on history. The first creates a `User` and applies the fact
+that this happend. The later creates a `User` and replays history to build the state.
 
 ``` go
 // Creates an new User object.
 func NewUser(username string) *User {
+    // Create a new user object
     user := new(User)
-    user.sourcer = sourcing.AttachNew(user)
+    user.EventSource = sourcing.CreateNew(user)
 
-    user.sourcer.Apply(events.UserCreated{
+    // Apply the fact that the user was created.
+    user.Apply(events.UserCreated{
         Username: username,
     })
 
@@ -99,7 +103,7 @@ func NewUser(username string) *User {
 // Creates an new User object and builds the state from the history.
 func NewUserFromHistory(history []sourcing.EventEnvelope) *User {
     var user = new(User)
-    user.sourcer = sourcing.AttachFromHistory(user, history)
+    user.EventSource = sourcing.AttachFromHistory(user, history)
 
     return user
 }
