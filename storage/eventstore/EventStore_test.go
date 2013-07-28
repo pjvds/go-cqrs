@@ -2,7 +2,6 @@ package eventstore
 
 import (
 	"fmt"
-	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/storage"
 	"github.com/pjvds/go-cqrs/tests/domain"
 	"github.com/pjvds/go-cqrs/tests/events"
@@ -51,11 +50,10 @@ func (s *EventStoreTestSuite) TestSmoke(c *C) {
 		toStore.ChangeUsername(fmt.Sprintf("pjvds%v", i))
 	}
 
-	state := sourcing.GetState(toStore)
-	err := s.repository.Add(state)
+	err := s.repository.Add(toStore)
 	c.Assert(err, IsNil)
 
-	events, err := s.store.ReadStream(storage.EventStreamId(state.Id()))
+	events, err := s.store.ReadStream(storage.EventStreamId(toStore.Id()))
 	c.Assert(err, IsNil)
 	c.Assert(len(events), Equals, 26)
 }

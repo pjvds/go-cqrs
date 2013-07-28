@@ -9,8 +9,8 @@ import (
 // Holds the state of our user. Note that
 // state like Username is not updated directly!
 type User struct {
-	// Reference to the sourcer
-	sourcer sourcing.EventSource
+	// This is an event source
+	sourcing.EventSource
 
 	Username string
 }
@@ -18,9 +18,9 @@ type User struct {
 // Creates an new User object.
 func NewUser(username string) *User {
 	user := new(User)
-	user.sourcer = sourcing.AttachNew(user)
+	user.EventSource = sourcing.CreateNew(user)
 
-	user.sourcer.Apply(events.UserCreated{
+	user.Apply(events.UserCreated{
 		Username: username,
 	})
 
@@ -30,14 +30,9 @@ func NewUser(username string) *User {
 // Creates an new User object and builds the state from the history.
 func NewUserFromHistory(sourceId sourcing.EventSourceId, history []sourcing.Event) *User {
 	var user = new(User)
-	user.sourcer = sourcing.AttachFromHistory(user, sourceId, history)
+	user.EventSource = sourcing.CreateFromHistory(user, sourceId, history)
 
 	return user
-}
-
-// Disposes the user object and detach user from event sourcing context.
-func (user *User) Dispose() {
-	sourcing.Detach(user)
 }
 
 // Change the username to a new name.
@@ -48,7 +43,7 @@ func (user *User) ChangeUsername(username string) error {
 	}
 
 	// Raise the fact that the username is changed.
-	user.sourcer.Apply(events.UsernameChanged{
+	user.Apply(events.UsernameChanged{
 		OldUsername: user.Username,
 		NewUsername: username,
 	})

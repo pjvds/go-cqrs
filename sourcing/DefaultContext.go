@@ -4,18 +4,10 @@ var (
 	defaultContext = newDefaultContext()
 )
 
-func AttachNew(source interface{}) EventSource {
-	return defaultContext.AttachNew(source)
+func CreateNew(source interface{}) EventSource {
+	return defaultContext.CreateNew(source)
 }
 
-func AttachFromHistory(source interface{}, id EventSourceId, history []Event) EventSource {
-	return defaultContext.AttachFromHistory(source, id, history)
-}
-
-func GetState(source interface{}) EventSource {
-	return defaultContext.GetState(source)
-}
-
-func Detach(source interface{}) {
-	defaultContext.Detach(source)
+func CreateFromHistory(source interface{}, id EventSourceId, history []Event) EventSource {
+	return defaultContext.CreateFromHistory(source, id, history)
 }
