@@ -6,12 +6,15 @@ import (
 	"github.com/pjvds/go-cqrs/tests/events"
 )
 
-// Holds the state of our user. Note that
-// state like Username is not updated directly!
+// Holds the state of our user. Note that the
+// state, like Username, is not updated directly.
 type User struct {
-	// This is an event source
+	// Make this user an event source.
+	// This fields needs to be initialized at construction before any state is changed.
 	sourcing.EventSource
 
+	// Holds the username, do not update this fields directly.
+	// It should only be modified by ctor and ChangeUsername method.
 	Username string
 }
 

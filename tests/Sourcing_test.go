@@ -40,6 +40,7 @@ func (s *AppTestSuite) TestStateChangesAreRepresentedByEvents(c *C) {
 }
 
 func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
+	// The id of our event source that we will rebuild from history.
 	sourceId, _ := sourcing.ParseEventSourceId("0791d279-664d-458e-bf60-567ade140832")
 
 	// The full history for the User domain object
@@ -58,7 +59,10 @@ func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 	// Create a new User domain object from history
 	user := domain.NewUserFromHistory(sourceId, history)
 
+	// It should not have the initial state.
 	c.Assert(user.Username, Not(Equals), "pjvds")
+
+	// It should have the latest state.
 	c.Assert(user.Username, Equals, "wwwouter")
 }
 
