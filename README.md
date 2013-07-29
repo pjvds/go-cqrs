@@ -139,7 +139,7 @@ func (user *User) ChangeUsername(username string) error {
 
 ### Event handler
 
-The `user.sourcer.Apply()` call registers that the event is happened and calls
+The `user.Apply()` call registers that the event is happened and calls
 an event handling method on the `User` object that updates the state occordingly.
 
 ``` go
