@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gorilla/feeds"
+	"github.com/pjvds/feeds"
 	"github.com/pjvds/go-cqrs/storage"
 	"net/http"
 	"net/url"
