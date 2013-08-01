@@ -69,6 +69,8 @@ func (s *AppTestSuite) TestDomainObjectCanBeBuildFromHistory(c *C) {
 func (s *AppTestSuite) BenchmarkRebuildUserFromHistory(c *C) {
 	// The full history for the User domain object
 	sourceId, _ := sourcing.ParseEventSourceId("0791d279-664d-458e-bf60-567ade140832")
+
+	// The full history for the User domain object
 	history := []sourcing.Event{
 		// It was first created
 		events.UserCreated{
