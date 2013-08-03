@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/pjvds/feeds"
 	"github.com/pjvds/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage/serialization"
 	"net/http"
 	"net/url"
 )
@@ -14,14 +15,16 @@ import (
 type EventStore struct {
 	baseUrl string
 	//	register *sourcing.EventTypeRegister
-	PageSize int
+	PageSize   int
+	serializer serialization.Serializer
 }
 
 func DailEventStore(url string, register *storage.EventTypeRegister) (*EventStore, error) {
 	return &EventStore{
 		baseUrl: url,
 		//register: register,
-		PageSize: 20,
+		PageSize:   20,
+		serializer: serialization.NewJsonSerializer(),
 	}, nil
 }
 
@@ -41,10 +44,15 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 
 	for i := 0; i < len(events); i++ {
 		e := events[i]
+		d, err := store.serializer.Serialize(&e.Data)
+		if err != nil {
+			return err
+		}
+
 		data[i] = &Event{
 			EventId:   e.EventId.String(),
 			EventType: e.Name.String(),
-			Data:      e.Data,
+			Data:      d,
 		}
 	}
 
