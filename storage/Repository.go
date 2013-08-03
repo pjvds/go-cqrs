@@ -6,20 +6,34 @@ import (
 	"time"
 )
 
+type EventDispatcher interface {
+	Dispatch(change *EventStreamChange)
+}
+
+type NullEventDispatcher struct{}
+
+func (dispatcher *NullEventDispatcher) Dispatch(change *EventStreamChange) {
+}
+func NewNullEventDispatcher() *NullEventDispatcher {
+	return &NullEventDispatcher{}
+}
+
 type RepositoryBackend interface {
 	WriteStream(change *EventStreamChange) error
 	ReadStream(streamId EventStreamId) ([]*Event, error)
 }
 
 type Repository struct {
-	namer   EventNamer
-	backend RepositoryBackend
+	namer      EventNamer
+	backend    RepositoryBackend
+	dispatcher EventDispatcher
 }
 
-func NewRepository(backend RepositoryBackend) *Repository {
+func NewRepository(backend RepositoryBackend, dispatcher EventDispatcher) *Repository {
 	return &Repository{
-		namer:   NewTypeEventNamer(),
-		backend: backend,
+		namer:      NewTypeEventNamer(),
+		backend:    backend,
+		dispatcher: dispatcher,
 	}
 }
 
@@ -29,11 +43,15 @@ func (r *Repository) Add(source sourcing.EventSource) error {
 		return err
 	}
 
-	return r.backend.WriteStream(change)
+	if err = r.backend.WriteStream(change); err != nil {
+		r.dispatcher.Dispatch(change)
+	}
+
+	return err
 }
 
 func (r *Repository) Get(sourceId sourcing.EventSourceId, source sourcing.EventSource) error {
-	events, err := r.backend.ReadStream(EventStreamId(source.Id()))
+	events, err := r.backend.ReadStream(EventStreamId(sourceId))
 	if err != nil {
 		return err
 	}
@@ -46,6 +64,7 @@ func (r *Repository) Get(sourceId sourcing.EventSourceId, source sourcing.EventS
 }
 
 func (r *Repository) getStreamChangeFromSource(source sourcing.EventSource) (*EventStreamChange, error) {
+	sourceId := source.Id()
 	events := source.Events()
 	eventCount := int64(len(events))
 
@@ -64,7 +83,7 @@ func (r *Repository) getStreamChangeFromSource(source sourcing.EventSource) (*Ev
 	}
 
 	return &EventStreamChange{
-		StreamId: EventStreamId(source.Id()),
+		StreamId: EventStreamId(sourceId),
 		From:     fromSequence,
 		To:       fromSequence + eventCount,
 		Events:   streamEvents,

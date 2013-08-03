@@ -40,7 +40,7 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 	store, _ := DailEventStore("http://localhost:2113", register)
 	s.store = store
 
-	s.repository = storage.NewRepository(s.store)
+	s.repository = storage.NewRepository(s.store, storage.NewNullEventDispatcher())
 }
 
 func (s *EventStoreTestSuite) TestSmoke(c *C) {
