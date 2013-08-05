@@ -23,6 +23,7 @@ build:
     - script:
         name: Test
         code: |-
+            go get launchpad.net/gocheck
             go get github.com/pjvds/gocov/gocov
             gocov test ./... > coverage.json
 
