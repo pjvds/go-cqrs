@@ -38,16 +38,25 @@ func NewRepository(backend RepositoryBackend, dispatcher EventDispatcher) *Repos
 }
 
 func (r *Repository) Add(source sourcing.EventSource) error {
+	Log.Debug("Adding changes for %v", source.Id())
+
 	change, err := r.getStreamChangeFromSource(source)
 	if err != nil {
 		return err
 	}
 
-	if err = r.backend.WriteStream(change); err != nil {
-		r.dispatcher.Dispatch(change)
+	Log.Debug("Saving change with backend")
+	if err := r.backend.WriteStream(change); err != nil {
+		Log.Error("Error from backend: %v", err)
+		return err
 	}
+	Log.Debug("Succesfully wrote change to repository backend.")
 
-	return err
+	Log.Debug("Starting dispatching change.")
+	r.dispatcher.Dispatch(change)
+
+	Log.Debug("Change added succesfully")
+	return nil
 }
 
 func (r *Repository) Get(sourceId sourcing.EventSourceId, source sourcing.EventSource) error {
