@@ -24,6 +24,8 @@ build:
         name: Test
         code: |-
             go get launchpad.net/gocheck
+            # Use forked version until pull request has been excepted:
+            # https://github.com/axw/gocov/pull/46
             go get github.com/pjvds/gocov/gocov
             gocov test ./... > coverage.json
 
