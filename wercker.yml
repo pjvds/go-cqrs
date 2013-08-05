@@ -22,7 +22,13 @@ build:
 
     - script:
         name: Test
-        code: go test ./...
+        code: |-
+            go get github.com/axw/gocov/gocov
+            gocov test ./... > coverage.json
+
+    - script:
+        name: Coverage
+        code: gocov report coverage.json
 
     - script:
         name: Benchmark
