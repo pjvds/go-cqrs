@@ -31,7 +31,10 @@ build:
 
     - script:
         name: Coverage
-        code: gocov report coverage.json
+        code: |-
+            go get github.com/matm/gocov-html
+            gocov report coverage.json
+            gocov-html coverage.json > $WERCKER_REPORT_ARTIFACTS_DIR/coverage.html
 
     - script:
         name: Store cache
