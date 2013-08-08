@@ -23,5 +23,9 @@ func (namer *TypeEventNamer) GetEventName(e sourcing.Event) EventName {
 }
 
 func (namer *TypeEventNamer) GetEventNameFromType(t reflect.Type) EventName {
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+
 	return EventName(t.PkgPath() + "/" + t.Name())
 }
