@@ -15,6 +15,13 @@ func NewEventId() EventId {
 	return EventId(*guid)
 }
 
+func ParseEventId(value string) (*EventId, error) {
+	result := new(EventId)
+	err := result.UnmarshalJSON([]byte(value))
+
+	return result, err
+}
+
 func (id EventId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
@@ -33,7 +40,6 @@ func (id *EventId) UnmarshalJSON(b []byte) error {
 	}
 
 	eventId := EventId(value)
-	id = &eventId
 	*id = eventId
 	return nil
 }
