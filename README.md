@@ -1,5 +1,7 @@
 # Go-CQRS
 
+[![wercker status](https://app.wercker.com/status/2b9662864982402105e0e2555a8a20da "wercker status")](https://app.wercker.com/project/bykey/2b9662864982402105e0e2555a8a20da)
+
 This is an experimental library that tries to bring the concepts from CQRS to Go. It
 currently focusses on adding event sourcing. Event sourcing ensures that all changes
 to the application state are stored as a sequence of events. Not just can we query
