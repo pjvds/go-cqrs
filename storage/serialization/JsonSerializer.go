@@ -54,8 +54,13 @@ func (s *JsonSerializer) Deserialize(name storage.EventName, data []byte) (*stor
 	if !ok {
 		return e, errors.New(fmt.Sprintf("No known type for %v, register it first", name.String()))
 	}
-	event := reflect.New(eventType)
-	e.Data = event.Interface()
+	eventValue := reflect.New(eventType)
+	event := eventValue.Interface()
+	if err := json.Unmarshal(raw.Data, event); err != nil {
+		return nil, err
+	}
+
+	e.Data = event
 
 	return e, nil
 }
