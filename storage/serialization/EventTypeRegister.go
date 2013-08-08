@@ -1,6 +1,7 @@
 package serialization
 
 import (
+	"github.com/pjvds/go-cqrs/sourcing"
 	"github.com/pjvds/go-cqrs/storage"
 	"reflect"
 )
@@ -23,6 +24,16 @@ func NewEventTypeRegister() *EventTypeRegister {
 // if it exists. It will register the type of the element, even if you provide
 // a pointer type. For example, *FooBar will be registered as FooBar.
 func (register *EventTypeRegister) Register(n storage.EventName, t reflect.Type) {
+	for t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+
+	register.types[n] = t
+}
+
+func (register *EventTypeRegister) RegisterInstance(n storage.EventName, e sourcing.Event) {
+	t := reflect.TypeOf(e)
+
 	for t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
