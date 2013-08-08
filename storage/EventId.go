@@ -34,5 +34,6 @@ func (id *EventId) UnmarshalJSON(b []byte) error {
 
 	eventId := EventId(value)
 	id = &eventId
+	*id = eventId
 	return nil
 }
