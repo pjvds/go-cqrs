@@ -20,10 +20,11 @@ func NewEventTypeRegister() *EventTypeRegister {
 }
 
 // Registers an event type. An existing entry with the same name is overwritten
-// if it exists.
+// if it exists. It will register the type of the element, even if you provide
+// a pointer type. For example, *FooBar will be registered as FooBar.
 func (register *EventTypeRegister) Register(n storage.EventName, t reflect.Type) {
-	for next := t.Elem(); t.Kind() == reflect.Ptr; next = t {
-		t = next
+	for t.Kind() == reflect.Ptr {
+		t = t.Elem()
 	}
 
 	register.types[n] = t
