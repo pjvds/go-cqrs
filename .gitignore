@@ -2,3 +2,5 @@
 gcqrs
 
 example/example
+
+*.test

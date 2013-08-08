@@ -6,5 +6,5 @@ import (
 
 type Serializer interface {
 	Serialize(e *storage.Event) ([]byte, error)
-	Deserialize(name storage.EventName, data []byte) (storage.Event, error)
+	Deserialize(name storage.EventName, data []byte) (*storage.Event, error)
 }
