@@ -1,10 +1,10 @@
 package serialization
 
 import (
-	"github.com/pjvds/go-cqrs/sourcing"
+	"github.com/pjvds/go-cqrs/storage"
 )
 
 type Serializer interface {
-	Serialize(e *sourcing.Event) ([]byte, error)
-	Deserialize(data []byte, e *sourcing.Event) error
+	Serialize(e *storage.Event) ([]byte, error)
+	Deserialize(name storage.EventName, data []byte) (storage.Event, error)
 }
