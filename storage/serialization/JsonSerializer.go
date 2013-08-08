@@ -9,18 +9,6 @@ import (
 	"time"
 )
 
-type JsonDocument map[string]interface{}
-
-// Holds the meta information for an event with the data
-// object as a raw message so that it can be deserialized in two stages.
-type jsonEvent struct {
-	EventId   storage.EventId       `json:"eventId"`   // The id of the event itself
-	Name      storage.EventName     `json:"name"`      // The event name, this value is also used for type identification (maps name to Go type)
-	Sequence  storage.EventSequence `json:"sequence"`  // The sequence of the event which starts at zero.
-	Timestamp time.Time             `json:"timestamp"` // The point in time when this event happened.
-	Data      json.RawMessage       `json:"payload"`   // The data of the event.
-}
-
 type JsonSerializer struct {
 	types *EventTypeRegister
 }
@@ -38,7 +26,13 @@ func (s *JsonSerializer) Serialize(e *storage.Event) ([]byte, error) {
 }
 
 func (s *JsonSerializer) Deserialize(name storage.EventName, data []byte) (*storage.Event, error) {
-	raw := new(jsonEvent)
+	raw := new(struct {
+		EventId   storage.EventId       `json:"eventId"`
+		Name      storage.EventName     `json:"name"`
+		Sequence  storage.EventSequence `json:"sequence"`
+		Timestamp time.Time             `json:"timestamp"`
+		Data      json.RawMessage       `json:"payload"`
+	})
 
 	if err := json.Unmarshal(data, raw); err != nil {
 		return nil, err
