@@ -13,18 +13,16 @@ import (
 )
 
 type EventStore struct {
-	baseUrl string
-	//	register *sourcing.EventTypeRegister
+	baseUrl    string
 	PageSize   int
 	serializer serialization.Serializer
 }
 
-func DailEventStore(url string, register *storage.EventTypeRegister) (*EventStore, error) {
+func DailEventStore(url string, register *serialization.EventTypeRegister) (*EventStore, error) {
 	return &EventStore{
-		baseUrl: url,
-		//register: register,
+		baseUrl:    url,
 		PageSize:   20,
-		serializer: serialization.NewJsonSerializer(),
+		serializer: serialization.NewJsonSerializer(register),
 	}, nil
 }
 
@@ -44,7 +42,7 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 
 	for i := 0; i < len(events); i++ {
 		e := events[i]
-		d, err := store.serializer.Serialize(&e.Data)
+		d, err := store.serializer.Serialize(e)
 		if err != nil {
 			return err
 		}
@@ -85,7 +83,7 @@ func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.
 	}
 
 	events := make([]*storage.Event, 0)
-	page, err := processFeed(feed)
+	page, err := store.processFeed(feed)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +105,7 @@ func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.
 			return nil, err
 		}
 
-		page, err = processFeed(feed)
+		page, err = store.processFeed(feed)
 		if err != nil {
 			return nil, err
 		}
@@ -131,13 +129,13 @@ func linksToMap(links []*feeds.AtomLink) map[string]string {
 	return m
 }
 
-func processFeed(feed *feeds.AtomFeed) ([]*storage.Event, error) {
+func (store *EventStore) processFeed(feed *feeds.AtomFeed) ([]*storage.Event, error) {
 	result := make([]*storage.Event, len(feed.Entries))
 	for index, entry := range feed.Entries {
 		alternateLink := entry.Links[1]
 		eventUrl := alternateLink.Href
 
-		event, err := downloadEvent(eventUrl)
+		event, err := store.downloadEvent(eventUrl)
 		if err != nil {
 			return nil, err
 		}
@@ -147,7 +145,7 @@ func processFeed(feed *feeds.AtomFeed) ([]*storage.Event, error) {
 	return result, nil
 }
 
-func downloadEvent(url string) (*storage.Event, error) {
+func (store *EventStore) downloadEvent(url string) (*storage.Event, error) {
 	r, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
@@ -164,8 +162,13 @@ func downloadEvent(url string) (*storage.Event, error) {
 	decoder := json.NewDecoder(response.Body)
 	defer response.Body.Close()
 
-	result := new(storage.Event)
-	err = decoder.Decode(result)
+	raw := new(Event)
+	err = decoder.Decode(raw)
 
-	return result, err
+	if err != nil {
+		return nil, err
+	}
+
+	event, err := store.serializer.Deserialize(*storage.NewEventName(raw.EventType), raw.Data)
+	return event, err
 }
