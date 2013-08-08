@@ -1,6 +1,7 @@
 package eventstore
 
 import (
+	"flag"
 	"fmt"
 	"github.com/pjvds/go-cqrs/storage"
 	"github.com/pjvds/go-cqrs/storage/serialization"
@@ -9,6 +10,12 @@ import (
 	. "launchpad.net/gocheck"
 	"reflect"
 )
+
+var testEventstore = flag.Bool("eventstore", false, "Include eventstore tests")
+
+func init() {
+	flag.Parse()
+}
 
 // The state for the test suite
 type EventStoreTestSuite struct {
@@ -20,6 +27,10 @@ type EventStoreTestSuite struct {
 var _ = Suite(&EventStoreTestSuite{})
 
 func (s *EventStoreTestSuite) SetUpSuite(c *C) {
+	if !*testEventstore {
+		c.Skip("-eventstore not provided")
+	}
+
 	register := serialization.NewEventTypeRegister()
 	namer := storage.NewTypeEventNamer()
 
