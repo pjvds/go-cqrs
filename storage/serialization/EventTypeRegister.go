@@ -22,6 +22,10 @@ func NewEventTypeRegister() *EventTypeRegister {
 // Registers an event type. An existing entry with the same name is overwritten
 // if it exists.
 func (register *EventTypeRegister) Register(n storage.EventName, t reflect.Type) {
+	for next := t.Elem(); t.Kind() == reflect.Ptr; next = t {
+		t = next
+	}
+
 	register.types[n] = t
 }
 
