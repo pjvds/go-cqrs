@@ -31,14 +31,12 @@ func (register *EventTypeRegister) Register(n storage.EventName, t reflect.Type)
 	register.types[n] = t
 }
 
+// Registers an event type by instance. An existing entry with the same name is
+// overwritten if it exists. It will register the type of the element, even if
+// you provide a pointer type. For example, *FooBar will be registered as FooBar.
 func (register *EventTypeRegister) RegisterInstance(n storage.EventName, e sourcing.Event) {
 	t := reflect.TypeOf(e)
-
-	for t.Kind() == reflect.Ptr {
-		t = t.Elem()
-	}
-
-	register.types[n] = t
+	register.Register(n, t)
 }
 
 // Get the static type from an event name. It results `true` for `ok` if
