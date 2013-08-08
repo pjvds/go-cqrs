@@ -25,3 +25,15 @@ func (s *EventNamerTestSuite) TestGetEventName(c *C) {
 
 	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
 }
+
+func (s *EventNamerTestSuite) TestGetEventNameForPointer(c *C) {
+	event := &myEvent{
+		Foo: "baz",
+		Bar: 42,
+	}
+
+	result := NewTypeEventNamer()
+	name := result.GetEventName(event)
+
+	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
+}
