@@ -3,13 +3,13 @@ build:
   steps:
     - pjvds/setup-go-workspace
 
-    - script:
-        name: Populate cache
-        code: |-
-            # BEFORE YOU COPY AND USE THIS STEP IN YOUR OWN BUILD PIPELINE
-            # MAKE SURE YOU SET $WERCKER_SOURCE_DIR TO THE PACKAGE DIRECTORY
-            # OR YOUR PROJECT, LIKE: $GOPATH/github.com/pjvds/httpcallback.io
-            if test -d "$WERCKER_CACHE_DIR/go-pkg-cache"; then rsync -avzv --exclude "$WERCKER_SOURCE_DIR" "$WERCKER_CACHE_DIR/go-pkg-cache/" "$GOPATH/" ; fi
+    # - script:
+    #     name: Populate cache
+    #     code: |-
+    #         # BEFORE YOU COPY AND USE THIS STEP IN YOUR OWN BUILD PIPELINE
+    #         # MAKE SURE YOU SET $WERCKER_SOURCE_DIR TO THE PACKAGE DIRECTORY
+    #         # OR YOUR PROJECT, LIKE: $GOPATH/github.com/pjvds/httpcallback.io
+    #         if test -d "$WERCKER_CACHE_DIR/go-pkg-cache"; then rsync -avzv --exclude "$WERCKER_SOURCE_DIR" "$WERCKER_CACHE_DIR/go-pkg-cache/" "$GOPATH/" ; fi
 
     - script:
         name: Get dependencies
