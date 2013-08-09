@@ -56,10 +56,3 @@ build:
             # MAKE SURE YOU SET $WERCKER_SOURCE_DIR TO THE PACKAGE DIRECTORY
             # OR YOUR PROJECT, LIKE: $GOPATH/github.com/pjvds/httpcallback.io
             rsync -avzv --exclude "$WERCKER_SOURCE_DIR" "$GOPATH/" "$WERCKER_CACHE_DIR/go-pkg-cache/"
-
-deploy:
-    step:
-        - pjvds/setup-go-workspace
-        - script:
-            name:
-            code:
