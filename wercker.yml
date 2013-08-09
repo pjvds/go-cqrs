@@ -29,6 +29,14 @@ build:
             go get github.com/pjvds/gocov/gocov
             gocov test ./... > coverage.json
 
+- script:
+        name: Coveralls.io
+        code: |-
+            # The COVERALLS_TOKEN is set in the project at
+            # wercker as project environment variable.
+            go get github.com/mattn/goveralls
+            goveralls -service='wercker.com' $COVERALLS_TOKEN
+
     - script:
         name: Coverage
         code: |-
