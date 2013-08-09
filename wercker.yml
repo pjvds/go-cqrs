@@ -30,6 +30,13 @@ build:
             gocov test ./... > coverage.json
 
     - script:
+        name: Coverage
+        code: |-
+            go get github.com/matm/gocov-html
+            gocov report coverage.json
+            gocov-html coverage.json > $WERCKER_REPORT_ARTIFACTS_DIR/coverage.html
+
+    - script:
         name: Coveralls.io
         code: |-
             # The COVERALLS_TOKEN is set in the project at
@@ -38,11 +45,9 @@ build:
             goveralls -package="./..." -service='wercker.com' $COVERALLS_TOKEN
 
     - script:
-        name: Coverage
+        name: Benchmark
         code: |-
-            go get github.com/matm/gocov-html
-            gocov report coverage.json
-            gocov-html coverage.json > $WERCKER_REPORT_ARTIFACTS_DIR/coverage.html
+            go test -test.bench ./...
 
     - script:
         name: Store cache
