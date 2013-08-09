@@ -13,3 +13,11 @@ func NewEventRecorder() *EventRecorder {
 func (r *EventRecorder) Record(e *Event) {
 	r.events = append(r.events, e)
 }
+
+func (r *EventRecorder) GetEvents() []*Event {
+	return r.events
+}
+
+func (r *EventRecorder) Clear() {
+	r.events = make([]*Event, 0)
+}
