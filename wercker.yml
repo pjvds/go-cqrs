@@ -44,10 +44,10 @@ build:
             go get github.com/mattn/goveralls
             goveralls -package="./..." -service='wercker.com' $COVERALLS_TOKEN
 
-    - script:
-        name: Benchmark
-        code: |-
-            go test -test.bench ./...
+    # - script:
+    #     name: Benchmark
+    #     code: |-
+    #         go test -test.bench ./...
 
     - script:
         name: Store cache
@@ -56,3 +56,10 @@ build:
             # MAKE SURE YOU SET $WERCKER_SOURCE_DIR TO THE PACKAGE DIRECTORY
             # OR YOUR PROJECT, LIKE: $GOPATH/github.com/pjvds/httpcallback.io
             rsync -avzv --exclude "$WERCKER_SOURCE_DIR" "$GOPATH/" "$WERCKER_CACHE_DIR/go-pkg-cache/"
+
+deploy:
+    step:
+        - pjvds/setup-go-workspace
+        - script:
+            name:
+            code:
