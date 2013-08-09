@@ -33,6 +33,6 @@ func (id *EventStreamId) UnmarshalJSON(b []byte) error {
 	}
 
 	eventId := EventStreamId(value)
-	id = &eventId
+	*id = eventId
 	return nil
 }
