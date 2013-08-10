@@ -35,7 +35,8 @@ func (s *JsonSerializer) Deserialize(name storage.EventName, data []byte) (*stor
 	})
 
 	if err := json.Unmarshal(data, raw); err != nil {
-		return nil, err
+		Log.Error("Error while unmarhalling data: %v\n\tdata: \"%v\"", err.Error(), string(data))
+		return nil, fmt.Errorf("Unable to unmarshall data: %v", err)
 	}
 
 	e := new(storage.Event)
@@ -44,9 +45,9 @@ func (s *JsonSerializer) Deserialize(name storage.EventName, data []byte) (*stor
 	e.Sequence = raw.Sequence
 	e.Timestamp = raw.Timestamp
 
-	eventType, ok := s.types.Get(name)
+	eventType, ok := s.types.Get(e.Name)
 	if !ok {
-		return e, errors.New(fmt.Sprintf("No known type for %v, register it first", name.String()))
+		return e, errors.New(fmt.Sprintf("No known type for '%v', register it first", e.Name))
 	}
 	eventValue := reflect.New(eventType)
 	event := eventValue.Interface()
