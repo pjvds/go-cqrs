@@ -8,6 +8,7 @@ import (
 	"github.com/pjvds/feeds"
 	"github.com/pjvds/go-cqrs/storage"
 	"github.com/pjvds/go-cqrs/storage/serialization"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -27,9 +28,9 @@ func DailEventStore(url string, register *serialization.EventTypeRegister) (*Eve
 }
 
 type Event struct {
-	EventId   string          `json:"eventId"`
-	EventType string          `json:"eventType"`
-	Data      json.RawMessage `json:"data"`
+	EventId   string         `json:"eventId"`
+	EventType string         `json:"eventType"`
+	Data      *storage.Event `json:"data"`
 }
 
 func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
@@ -42,19 +43,17 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 
 	for i := 0; i < len(events); i++ {
 		e := events[i]
-		d, err := store.serializer.Serialize(e)
-		if err != nil {
-			return err
-		}
 
 		data[i] = &Event{
 			EventId:   e.EventId.String(),
 			EventType: e.Name.String(),
-			Data:      d,
+			Data:      e,
 		}
 	}
 
-	body, _ := json.Marshal(&data)
+	body, _ := json.MarshalIndent(&data, "", "  ")
+	Log.Debug("Posting:\n%v", string(body))
+
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
@@ -74,47 +73,22 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 }
 
 func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.Event, error) {
-	// Example: http://localhost:2113/streams/1b826790-5d4e-4227-7dc4-017ed73d30ac/head/backward/20
-	url := fmt.Sprintf("%v/streams/%v/head/backward/%v", store.baseUrl, streamId.String(), store.PageSize)
-
-	feed, err := feeds.DownloadAtomFeed(url)
-	if err != nil {
-		return nil, err
-	}
-
 	events := make([]*storage.Event, 0)
-	page, err := store.processFeed(feed)
+	pointer, err := OpenStreamPointer(streamId.String(), store.PageSize)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, i := range page {
-		events = append(events, i)
-	}
-	links := linksToMap(feed.Links)
-
-	for _, l := range feed.Links {
-		Log.Notice("Link: %v -> %v", l.Rel, l.Href)
-	}
-
-	next, ok := links["next"]
-	for ok {
-		Log.Notice("NEXT: %v", next)
-		feed, err = feeds.DownloadAtomFeed(next)
+	for pointer != nil {
+		event, err := store.downloadEvent(pointer.EventUrl)
 		if err != nil {
 			return nil, err
 		}
 
-		page, err = store.processFeed(feed)
-		if err != nil {
-			return nil, err
-		}
+		events = append(events, event)
+		next, err := pointer.Next()
 
-		for _, i := range page {
-			events = append(events, i)
-		}
-		links = linksToMap(feed.Links)
-		next, ok = links["next"]
+		pointer = next
 	}
 
 	return events, nil
@@ -159,16 +133,11 @@ func (store *EventStore) downloadEvent(url string) (*storage.Event, error) {
 		return nil, err
 	}
 
-	decoder := json.NewDecoder(response.Body)
-	defer response.Body.Close()
-
-	raw := new(Event)
-	err = decoder.Decode(raw)
-
+	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	event, err := store.serializer.Deserialize(*storage.NewEventName(raw.EventType), raw.Data)
+	event, err := store.serializer.Deserialize(*storage.NewEventName(""), body)
 	return event, err
 }
