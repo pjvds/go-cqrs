@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"encoding/json"
 	"github.com/pjvds/go-cqrs/sourcing"
 	"time"
 )
@@ -81,14 +80,14 @@ func (r *Repository) getStreamChangeFromSource(source sourcing.EventSource) (*Ev
 	streamEvents := make([]*Event, eventCount)
 
 	for i, e := range events {
-		data, err := json.Marshal(e)
-		if err != nil {
-			return nil, err
-		}
+		Log.Notice("%T", e)
 
 		name := r.namer.GetEventName(e)
 		sequence := NewEventSequence(fromSequence + int64(i))
-		streamEvents[i] = NewEvent(NewEventId(), name, sequence, time.Now(), data)
+
+		id := NewEventId()
+		timestamp := time.Now()
+		streamEvents[i] = NewEvent(id, name, sequence, timestamp, e)
 	}
 
 	return &EventStreamChange{
