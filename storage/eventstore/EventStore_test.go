@@ -58,7 +58,7 @@ func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	err := s.repository.Add(toStore)
 	c.Assert(err, IsNil)
 
-	//events, err := s.store.ReadStream(storage.EventStreamId(toStore.Id()))
-	// c.Assert(err, IsNil)
-	// c.Assert(len(events), Equals, 26)
+	events, err := s.store.ReadStream(storage.EventStreamId(toStore.Id()))
+	c.Assert(err, IsNil)
+	c.Assert(len(events), Equals, 26)
 }

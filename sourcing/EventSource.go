@@ -32,5 +32,5 @@ func (source *eventSource) Events() []Event {
 
 func (source *eventSource) Apply(event Event) {
 	source.applier.Route(event)
-	source.recorder.Record(&event)
+	source.recorder.Record(event)
 }
