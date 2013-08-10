@@ -38,7 +38,7 @@ func NewStreamEventPointer(pageUrl string, page *feeds.AtomFeed, entryIndex int,
 }
 
 func (s *StreamEventPointer) Next() (*StreamEventPointer, error) {
-	Log.Debug("Looking for next event for %v", s.EventUrl)
+	Log.Debug("Looking for next event for %v (%v/%v)", s.EventUrl, s.entryIndex+1, len(s.page.Entries))
 
 	// when this this not the last, get next event on page
 	if !s.isLastEvent() {
@@ -69,8 +69,10 @@ func (s *StreamEventPointer) Next() (*StreamEventPointer, error) {
 		return pointer, nil
 	}
 
+	Log.Debug("End of page reaced, checking for next feed")
+
 	// check if current feed has next link, otherwise redownload it
-	if _, ok := s.page.Link("next"); !ok {
+	if _, ok := s.page.Link("previous"); !ok {
 		page, err := feeds.DownloadAtomFeed(s.pageUrl)
 		if err != nil {
 			return nil, err
@@ -79,7 +81,7 @@ func (s *StreamEventPointer) Next() (*StreamEventPointer, error) {
 		s.page = page
 	}
 
-	if link, ok := s.page.Link("next"); ok {
+	if link, ok := s.page.Link("previous"); ok {
 		nextPage, err := feeds.DownloadAtomFeed(link)
 		if err != nil {
 			return nil, err
