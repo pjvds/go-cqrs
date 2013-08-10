@@ -11,10 +11,10 @@ type Context struct {
 }
 
 func (ctx *Context) create(id EventSourceId, source interface{}) EventSource {
+	recorder := NewEventRecorder()
 	router := NewReflectBasedRouter(source)
-	eventSource := newEventSource(id, router)
 
-	return eventSource
+	return newEventSource(id, router, recorder)
 }
 
 // Creates a new EventSource object that can be used to source events.
