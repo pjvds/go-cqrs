@@ -5,10 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pjvds/feeds"
 	"github.com/pjvds/go-cqrs/storage"
 	"github.com/pjvds/go-cqrs/storage/serialization"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 )
@@ -80,7 +78,13 @@ func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.
 	}
 
 	for pointer != nil {
-		event, err := store.downloadEvent(pointer.EventUrl)
+		data, err := pointer.DownloadEvent()
+		if err != nil {
+			return nil, err
+		}
+
+		// Todo: remove eventname, this is not needed any more.
+		event, err := store.serializer.Deserialize(*storage.NewEventName(""), data)
 		if err != nil {
 			return nil, err
 		}
@@ -92,52 +96,4 @@ func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.
 	}
 
 	return events, nil
-}
-
-func linksToMap(links []*feeds.AtomLink) map[string]string {
-	m := make(map[string]string, len(links))
-	for _, link := range links {
-		m[link.Rel] = link.Href
-	}
-
-	return m
-}
-
-func (store *EventStore) processFeed(feed *feeds.AtomFeed) ([]*storage.Event, error) {
-	result := make([]*storage.Event, len(feed.Entries))
-	for index, entry := range feed.Entries {
-		alternateLink := entry.Links[1]
-		eventUrl := alternateLink.Href
-
-		event, err := store.downloadEvent(eventUrl)
-		if err != nil {
-			return nil, err
-		}
-		result[index] = event
-	}
-
-	return result, nil
-}
-
-func (store *EventStore) downloadEvent(url string) (*storage.Event, error) {
-	r, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	r.Header.Add("Accept", "application/json")
-	c := http.Client{}
-
-	response, err := c.Do(r)
-	if err != nil {
-		return nil, err
-	}
-
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	event, err := store.serializer.Deserialize(*storage.NewEventName(""), body)
-	return event, err
 }
