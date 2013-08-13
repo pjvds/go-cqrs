@@ -3,6 +3,8 @@ package eventstore
 import (
 	"fmt"
 	"github.com/pjvds/feeds"
+	"io/ioutil"
+	"net/http"
 )
 
 type StreamEventPointer struct {
@@ -98,4 +100,23 @@ func (s *StreamEventPointer) Next() (*StreamEventPointer, error) {
 
 func (s *StreamEventPointer) isLastEvent() bool {
 	return s.entryIndex+1 == s.pageSize
+}
+
+// Downloads the data of the current event
+func (s *StreamEventPointer) DownloadEvent() ([]byte, error) {
+	r, err := http.NewRequest("GET", s.EventUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	r.Header.Add("Accept", "application/json")
+	c := http.Client{}
+
+	response, err := c.Do(r)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(response.Body)
+	return body, err
 }
