@@ -72,7 +72,7 @@ func (store *EventStore) WriteStream(change *storage.EventStreamChange) error {
 
 func (store *EventStore) ReadStream(streamId storage.EventStreamId) ([]*storage.Event, error) {
 	events := make([]*storage.Event, 0)
-	pointer, err := OpenStreamPointer(streamId.String(), store.PageSize)
+	pointer, err := OpenStreamPointer(streamId.String(), 0, store.PageSize)
 	if err != nil {
 		return nil, err
 	}

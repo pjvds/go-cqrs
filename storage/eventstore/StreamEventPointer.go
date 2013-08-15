@@ -17,8 +17,8 @@ type StreamEventPointer struct {
 	page *feeds.AtomFeed
 }
 
-func OpenStreamPointer(streamId string, pageSize int) (*StreamEventPointer, error) {
-	url := fmt.Sprintf("http://localhost:2113/streams/%v/0/forward/%v", streamId, pageSize)
+func OpenStreamPointer(streamId string, sequence int, pageSize int) (*StreamEventPointer, error) {
+	url := fmt.Sprintf("http://localhost:2113/streams/%v/%v/forward/%v", streamId, sequence, pageSize)
 	feed, err := feeds.DownloadAtomFeed(url)
 	if err != nil {
 		return nil, err
@@ -39,6 +39,7 @@ func NewStreamEventPointer(pageUrl string, page *feeds.AtomFeed, entryIndex int,
 	}
 }
 
+// Returns the a pointer to the next event or nil if it does not exist.
 func (s *StreamEventPointer) Next() (*StreamEventPointer, error) {
 	Log.Debug("Looking for next event for %v (%v/%v)", s.EventUrl, s.entryIndex+1, len(s.page.Entries))
 
