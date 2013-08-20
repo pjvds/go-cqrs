@@ -3,8 +3,14 @@ package sourcing
 import ()
 
 type EventSource interface {
+	// Gets the id of the event source
 	Id() EventSourceId
+
+	// Applies an event to the event source which will get recorded and applied.
+	// The later means the state of the event source is updated according to the event.
 	Apply(event Event)
+
+	// Get all events that happened since the last accept, or all if accept was never called.
 	Events() []Event
 }
 
