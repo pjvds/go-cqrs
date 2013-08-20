@@ -4,7 +4,7 @@ import ()
 
 func newDefaultContext() *Context {
 	return &Context{
-		newRecorder: func(id EventSourceId, source interface{}) *EventRecorder {
+		newRecorder: func(id EventSourceId, source interface{}) EventRecorder {
 			return NewEventRecorder()
 		},
 		newRouterForSource: func(id EventSourceId, source interface{}) EventRouter {
@@ -15,7 +15,7 @@ func newDefaultContext() *Context {
 
 // The sourcing context.
 type Context struct {
-	newRecorder        func(id EventSourceId, source interface{}) *EventRecorder
+	newRecorder        func(id EventSourceId, source interface{}) EventRecorder
 	newRouterForSource func(id EventSourceId, source interface{}) EventRouter
 }
 

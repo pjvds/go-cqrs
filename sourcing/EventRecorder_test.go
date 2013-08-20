@@ -49,10 +49,8 @@ func (s *EventRecorderTestSuite) TestClearClears(c *C) {
 
 	recoder := NewEventRecorder()
 	recoder.Record(&event)
-	recoder.Record(&event)
-	recoder.Record(&event)
 
-	c.Assert(recoder.GetEvents(), HasLen, 3)
+	c.Assert(recoder.GetEvents(), HasLen, 1)
 
 	recoder.Clear()
 
@@ -67,8 +65,6 @@ func (s *EventRecorderTestSuite) TestCanRecordAfterClear(c *C) {
 	})
 
 	recoder := NewEventRecorder()
-	recoder.Record(&event)
-	recoder.Record(&event)
 	recoder.Record(&event)
 	recoder.Clear()
 	recoder.Record(&event)
