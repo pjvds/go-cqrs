@@ -6,7 +6,7 @@ import (
 	"github.com/pjvds/go-cqrs/storage"
 	"github.com/pjvds/go-cqrs/storage/serialization"
 	"github.com/pjvds/go-cqrs/tests/domain"
-	"github.com/pjvds/go-cqrs/tests/events"
+	. "github.com/pjvds/go-cqrs/tests/events"
 	. "launchpad.net/gocheck"
 	"reflect"
 )
@@ -34,11 +34,11 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 	register := serialization.NewEventTypeRegister()
 	namer := storage.NewTypeEventNamer()
 
-	userCreatedType := reflect.TypeOf(events.UserCreated{})
+	userCreatedType := reflect.TypeOf(UserCreated{})
 	userCreatedName := namer.GetEventNameFromType(userCreatedType)
 	register.Register(userCreatedName, userCreatedType)
 
-	usernameChangedType := reflect.TypeOf(events.UsernameChanged{})
+	usernameChangedType := reflect.TypeOf(UsernameChanged{})
 	usernameChangedName := namer.GetEventNameFromType(usernameChangedType)
 	register.Register(usernameChangedName, usernameChangedType)
 
@@ -51,7 +51,7 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 func (s *EventStoreTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
 	toStore := domain.NewUser("pjvds")
-	for i := 0; i < 25; i++ {
+	for i := 0; i < 24; i++ {
 		toStore.ChangeUsername(fmt.Sprintf("pjvds%v", i))
 	}
 
@@ -60,5 +60,9 @@ func (s *EventStoreTestSuite) TestSmoke(c *C) {
 
 	events, err := s.store.ReadStream(storage.EventStreamId(toStore.Id()))
 	c.Assert(err, IsNil)
-	c.Assert(len(events), Equals, 26)
+	c.Assert(len(events), Equals, 25)
+
+	namer := storage.NewTypeEventNamer()
+	userCreatedType := reflect.TypeOf(UserCreated{})
+	c.Assert(events[0].Name, Equals, namer.GetEventNameFromType(userCreatedType))
 }
