@@ -3,16 +3,25 @@ package sourcing
 import ()
 
 func newDefaultContext() *Context {
-	return &Context{}
+	return &Context{
+		newRecorder: func(id EventSourceId, source interface{}) *EventRecorder {
+			return NewEventRecorder()
+		},
+		newRouterForSource: func(id EventSourceId, source interface{}) EventRouter {
+			return NewReflectBasedRouter(source)
+		},
+	}
 }
 
 // The sourcing context.
 type Context struct {
+	newRecorder        func(id EventSourceId, source interface{}) *EventRecorder
+	newRouterForSource func(id EventSourceId, source interface{}) EventRouter
 }
 
 func (ctx *Context) create(id EventSourceId, source interface{}) EventSource {
-	recorder := NewEventRecorder()
-	router := NewReflectBasedRouter(source)
+	recorder := ctx.newRecorder(id, source)
+	router := ctx.newRouterForSource(id, source)
 
 	return newEventSource(id, router, recorder)
 }
