@@ -24,7 +24,8 @@ func OpenStreamPointer(streamId string, sequence int, pageSize int) (*StreamEven
 		return nil, err
 	}
 
-	firstEntry := feed.Entries[0]
+	// Last event is oldest (first event from historical point of view)
+	firstEntry := feed.Entries[len(feed.Entries)-1]
 	link, _ := firstEntry.Link("alternate")
 	return NewStreamEventPointer(url, feed, 0, pageSize, link), nil
 }
@@ -66,7 +67,12 @@ func (s *StreamEventPointer) Next() (*StreamEventPointer, error) {
 			Log.Debug("New events in page after downloaded")
 		}
 
-		entry := s.page.Entries[entryIndex]
+		pageSize := s.pageSize
+		actualSize := len(s.page.Entries)
+		diffSize := s.pageSize - actualSize
+
+		normalizedIndex := pageSize - diffSize - 1 - entryIndex
+		entry := s.page.Entries[normalizedIndex]
 		link, _ := entry.Link("alternate")
 		pointer := NewStreamEventPointer(s.pageUrl, s.page, entryIndex, s.pageSize, link)
 		return pointer, nil
