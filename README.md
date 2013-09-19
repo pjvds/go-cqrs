@@ -158,3 +158,7 @@ func (user *User) HandleUsernameChanged(e events.UsernameChanged) {
 
 See the [User.go](https://github.com/pjvds/go-cqrs/blob/master/tests/domain/User.go)
 source to see all the details.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/pjvds/go-cqrs/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
