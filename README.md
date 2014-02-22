@@ -156,7 +156,7 @@ func (user *User) HandleUsernameChanged(e events.UsernameChanged) {
 }
 ```
 
-See the [User.go](https://github.com/pjvds/go-cqrs/blob/master/tests/domain/User.go)
+See the [User.go](https://github.com/dominikmayer/go-cqrs/blob/master/tests/domain/User.go)
 source to see all the details.
 
 

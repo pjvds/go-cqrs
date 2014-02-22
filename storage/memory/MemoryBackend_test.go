@@ -2,7 +2,7 @@ package memory
 
 import (
 	"encoding/json"
-	. "github.com/pjvds/go-cqrs/storage"
+	. "github.com/dominikmayer/go-cqrs/storage"
 	. "launchpad.net/gocheck"
 	"time"
 )

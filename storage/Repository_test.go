@@ -1,8 +1,8 @@
 package storage
 
 // import (
-// 	"github.com/pjvds/go-cqrs/sourcing"
-// 	"github.com/pjvds/go-cqrs/storage/memory"
+// 	"github.com/dominikmayer/go-cqrs/sourcing"
+// 	"github.com/dominikmayer/go-cqrs/storage/memory"
 // 	. "launchpad.net/gocheck"
 // )
 
