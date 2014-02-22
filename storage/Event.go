@@ -2,7 +2,7 @@ package storage
 
 import (
 	"fmt"
-	"github.com/pjvds/go-cqrs/sourcing"
+	"github.com/dominikmayer/go-cqrs/sourcing"
 	"time"
 )
 

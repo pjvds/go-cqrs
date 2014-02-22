@@ -3,10 +3,10 @@ package eventstore
 import (
 	"flag"
 	"fmt"
-	"github.com/pjvds/go-cqrs/storage"
-	"github.com/pjvds/go-cqrs/storage/serialization"
-	"github.com/pjvds/go-cqrs/tests/domain"
-	. "github.com/pjvds/go-cqrs/tests/events"
+	"github.com/dominikmayer/go-cqrs/storage"
+	"github.com/dominikmayer/go-cqrs/storage/serialization"
+	"github.com/dominikmayer/go-cqrs/tests/domain"
+	. "github.com/dominikmayer/go-cqrs/tests/events"
 	. "launchpad.net/gocheck"
 	"reflect"
 )

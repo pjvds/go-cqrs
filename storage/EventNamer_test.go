@@ -23,7 +23,7 @@ func (s *EventNamerTestSuite) TestGetEventName(c *C) {
 	result := NewTypeEventNamer()
 	name := result.GetEventName(event)
 
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
+	c.Assert(name, Equals, EventName("github.com/dominikmayer/go-cqrs/storage/myEvent"))
 }
 
 func (s *EventNamerTestSuite) TestGetEventNameForPointer(c *C) {
@@ -35,5 +35,5 @@ func (s *EventNamerTestSuite) TestGetEventNameForPointer(c *C) {
 	result := NewTypeEventNamer()
 	name := result.GetEventName(event)
 
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
+	c.Assert(name, Equals, EventName("github.com/dominikmayer/go-cqrs/storage/myEvent"))
 }

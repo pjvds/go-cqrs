@@ -1,7 +1,7 @@
 package serialization
 
 import (
-	"github.com/pjvds/go-cqrs/storage"
+	"github.com/dominikmayer/go-cqrs/storage"
 	. "launchpad.net/gocheck"
 	"reflect"
 	"time"
@@ -38,7 +38,7 @@ func (suite *JsonSerializerTestSuite) SetUpSuite(c *C) {
 }
 
 func (suite *JsonSerializerTestSuite) TestSerialize(c *C) {
-	expectedJson := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/pjvds/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"\",\"Bar\":0}}"
+	expectedJson := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/dominikmayer/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"\",\"Bar\":0}}"
 
 	timestamp, _ := time.Parse(time.RFC3339, "2011-02-01T12:32:40-05:00")
 
@@ -57,7 +57,7 @@ func (suite *JsonSerializerTestSuite) TestSerialize(c *C) {
 }
 
 func (suite *JsonSerializerTestSuite) TestDerialize(c *C) {
-	json := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/pjvds/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"hello world\",\"Bar\":42}}"
+	json := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/dominikmayer/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"hello world\",\"Bar\":42}}"
 	serializer := suite.serializer
 
 	event, err := serializer.Deserialize(suite.fooEventName, []byte(json))
