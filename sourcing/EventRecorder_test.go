@@ -1,6 +1,7 @@
 package sourcing
 
 import (
+	"testing"
 	. "launchpad.net/gocheck"
 )
 
@@ -8,8 +9,10 @@ import (
 type EventRecorderTestSuite struct {
 }
 
+func TestEventRecorder(t *testing.T) { TestingT(t) }
+
 // Setup the test suite
-var _ = Suite(&EventRecorderTestSuite{})
+//var _ = Suite(&EventRecorderTestSuite{})
 
 // Make sure we can record events
 func (s *EventRecorderTestSuite) TestRecord(c *C) {
