@@ -5,7 +5,7 @@ import (
 	//"encoding/json"
 	//"errors"
 	//"fmt"
-	"github.com/dominikmayer/go-cqrs/storage"
+	. "github.com/dominikmayer/go-cqrs/storage"
 	"github.com/dominikmayer/go-cqrs/storage/serialization"
 	//"net/http"
 	//"net/url"
@@ -30,13 +30,22 @@ func DialMongoDB(url string, database string, collection string, register *seria
 	}, nil
 }
 
-type Event struct {
-	EventId   string         //`json:"eventId"`
-	EventType string         //`json:"eventType"`
-	Data      *storage.Event //`json:"data"`
+//type Event struct {
+//	EventId   string         //`json:"eventId"`
+//	EventType string         //`json:"eventType"`
+//	Data      *storage.Event //`json:"data"`
+//}
+
+type MongoEvent struct {
+	EventStreamId EventStreamId
+	Change *EventStreamChange
 }
 
-func (store *MongoDB) WriteStream(change *storage.EventStreamChange) error {
+type MemoryBackend struct {
+	changes map[EventStreamId][]*EventStreamChange
+}
+
+func (store *MongoDB) WriteStream(change *EventStreamChange) error {
 	session, err := mgo.Dial(store.baseUrl)
 	Log.Debug("Base-URL: %v", store.baseUrl)
 	if err != nil {
@@ -46,11 +55,22 @@ func (store *MongoDB) WriteStream(change *storage.EventStreamChange) error {
 
 	collection := session.DB(store.database).C(store.collection)
 
-	events := change.Events
-	data := make([]*Event, len(events))
+	/* events := change.Events
+	data := make([]*MongoEvent, len(events))
 	Log.Debug("Creating new stream for %v events", len(events))
 
 	for i := 0; i < len(events); i++ {
+		//datapoint := data[i]
+		//Log.Debug("Datapoint: %v", datapoint)
+		datapoint := &MongoEvent{
+			EventStreamId: change.StreamId,
+			Change: change,
+		}
+		Log.Debug("Datapoint: %v", datapoint)
+		//datapoint.EventStreamId = change.StreamId
+		//datapoint.Change = change
+		data = append(data, datapoint)
+
 		e := events[i]
 
 		data[i] = &Event{
@@ -59,10 +79,12 @@ func (store *MongoDB) WriteStream(change *storage.EventStreamChange) error {
 			Data:      e,
 		}
 		Log.Debug("Data %v: %v", i, data[i])
-	}
+	}*/
+
+	data := change
 
 	Log.Debug("Inserting data: %v", data)
-	err = collection.Insert(events)
+	err = collection.Insert(data)
 	if err != nil {
 		return err
 	}
@@ -70,8 +92,9 @@ func (store *MongoDB) WriteStream(change *storage.EventStreamChange) error {
 	return nil
 }
 
-func (store *MongoDB) ReadStream(streamId storage.EventStreamId) ([]*storage.Event, error) {
-	events := make([]*storage.Event, 0)
+func (store *MongoDB) ReadStream(streamId EventStreamId) ([]*Event, error) {
+	//events := make([]*Event, 0)
+	events := make([]*EventStreamChange,0)
 	session, err := mgo.Dial(store.baseUrl)
 	if err != nil {
 		return nil, err
@@ -81,11 +104,17 @@ func (store *MongoDB) ReadStream(streamId storage.EventStreamId) ([]*storage.Eve
 	collection := session.DB(store.database).C(store.collection)
 
 	Log.Debug("Stream-ID: %v", streamId)
-	err = collection.Find(bson.M{"eventid": streamId}).All(&events)
-	Log.Debug("Events: %v", events)
+	marshallid, marshallerr := streamId.MarshalJSON()
+	Log.Debug("Stream-ID: %v, Error: %v", marshallid, marshallerr)
+	err = collection.Find(bson.M{"events.eventid": marshallid}).All(&events)
+	//err = collection.Find(bson.M{"events.name": "github.com/dominikmayer/go-cqrs/tests/events/UsernameChanged"}).All(&events)
+	Log.Debug("%v Events: %v", len(events), events)
 	if err != nil {
 		return nil, err
 	}
+	//events = events.Events
+	receivedEvents := events[0].Events
+	Log.Debug("%v Events: %v", len(receivedEvents), receivedEvents)
 	//err = collection.FindId(streamId).All(&events)
 
 //	for pointer != nil {
@@ -106,5 +135,5 @@ func (store *MongoDB) ReadStream(streamId storage.EventStreamId) ([]*storage.Eve
 //		pointer = next
 //	}
 
-	return events, nil
+	return receivedEvents, nil
 }

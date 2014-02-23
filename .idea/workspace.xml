@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f6964683-a459-480a-b893-262dde327eb9" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/storage/mongodb/Log.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/storage/mongodb/MongoDB.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/storage/mongodb/MongoDB_test.go" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sourcing/EventRecorder_test.go" afterPath="$PROJECT_DIR$/sourcing/EventRecorder_test.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sourcing/EventSourceId_test.go" afterPath="$PROJECT_DIR$/sourcing/EventSourceId_test.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/sourcing/Hook_test.go" afterPath="$PROJECT_DIR$/sourcing/Hook_test.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/storage/memory/MemoryBackend_test.go" afterPath="$PROJECT_DIR$/storage/memory/MemoryBackend_test.go" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/storage/Repository_test.go" afterPath="$PROJECT_DIR$/storage/Repository_test.go" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/storage/mongodb/Log.go" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/storage/memory/MemoryBackend.go" afterPath="$PROJECT_DIR$/storage/memory/MemoryBackend.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/storage/mongodb/MongoDB.go" afterPath="$PROJECT_DIR$/storage/mongodb/MongoDB.go" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/storage/mongodb/MongoDB_test.go" afterPath="$PROJECT_DIR$/storage/mongodb/MongoDB_test.go" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="go-cqrs.iws" />
@@ -76,10 +70,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MongoDB.go" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="MemoryBackend.go" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="14" column="1" selection-start="281" selection-end="281" vertical-scroll-proportion="2.5384614" vertical-offset="276" max-vertical-offset="765">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MongoDB.go" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/storage/mongodb/MongoDB.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="60" column="44" selection-start="1435" selection-end="1435" vertical-scroll-proportion="0.8446602" vertical-offset="465" max-vertical-offset="1740">
+            <state line="108" column="61" selection-start="2581" selection-end="2581" vertical-scroll-proportion="0.0" vertical-offset="1210" max-vertical-offset="2175">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EventStreamId.go" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/storage/EventStreamId.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="660">
               <folding />
             </state>
           </provider>
@@ -88,8 +100,10 @@
       <file leaf-file-name="MongoDB_test.go" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/storage/mongodb/MongoDB_test.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="48" column="32" selection-start="1031" selection-end="1084" vertical-scroll-proportion="0.0" vertical-offset="745" max-vertical-offset="1260">
-              <folding />
+            <state line="67" column="16" selection-start="1648" selection-end="1648" vertical-scroll-proportion="-9.0" vertical-offset="771" max-vertical-offset="1260">
+              <folding>
+                <marker date="1393161913000" expanded="true" signature="759:1438" placeholder="{ ... }" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -97,7 +111,7 @@
       <file leaf-file-name="EventStore.go" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/storage/eventstore/EventStore.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="5" selection-start="117" selection-end="117" vertical-scroll-proportion="0.0" vertical-offset="705" max-vertical-offset="1575">
+            <state line="8" column="5" selection-start="117" selection-end="117" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1575">
               <folding />
             </state>
           </provider>
@@ -106,34 +120,16 @@
       <file leaf-file-name="Repository.go" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/storage/Repository.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="15" selection-start="875" selection-end="875" vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1575">
+            <state line="39" column="51" selection-start="911" selection-end="911" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1575">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MemoryBackend.go" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend.go">
+      <file leaf-file-name="MemoryBackend_test.go" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend_test.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="10" column="40" selection-start="192" selection-end="192" vertical-scroll-proportion="0.0" vertical-offset="135" max-vertical-offset="750">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EventSourceId.go" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sourcing/EventSourceId.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="1" selection-start="55" selection-end="55" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="780">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="EventSource.go" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sourcing/EventSource.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="0" selection-start="704" selection-end="704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
+            <state line="19" column="22" selection-start="272" selection-end="272" vertical-scroll-proportion="0.0" vertical-offset="250" max-vertical-offset="855">
               <folding />
             </state>
           </provider>
@@ -160,7 +156,6 @@
         <option value="$PROJECT_DIR$/storage/Repository.go" />
         <option value="$PROJECT_DIR$/storage/eventstore/EventStore.go" />
         <option value="$PROJECT_DIR$/storage/eventstore/EventStore_test.go" />
-        <option value="$PROJECT_DIR$/storage/memory/MemoryBackend.go" />
         <option value="$PROJECT_DIR$/storage/serialization/EventTypeRegister.go" />
         <option value="$PROJECT_DIR$/storage/serialization/EventTypeRegister_test.go" />
         <option value="$PROJECT_DIR$/storage/serialization/JsonSerializer.go" />
@@ -176,6 +171,7 @@
         <option value="$PROJECT_DIR$/sourcing/EventRecorder_test.go" />
         <option value="$PROJECT_DIR$/sourcing/EventSourceId_test.go" />
         <option value="$PROJECT_DIR$/storage/memory/MemoryBackend_test.go" />
+        <option value="$PROJECT_DIR$/storage/memory/MemoryBackend.go" />
         <option value="$PROJECT_DIR$/storage/mongodb/MongoDB_test.go" />
         <option value="$PROJECT_DIR$/storage/mongodb/MongoDB.go" />
       </list>
@@ -682,7 +678,9 @@
     <entry file="file://$PROJECT_DIR$/storage/mongodb/MongoDB_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="1" selection-start="386" selection-end="386" vertical-scroll-proportion="0.0" vertical-offset="285" max-vertical-offset="1230">
-          <folding />
+          <folding>
+            <marker date="1393161913000" expanded="true" signature="759:1438" placeholder="{ ... }" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -698,7 +696,9 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state line="158" column="26" selection-start="4761" selection-end="4761" vertical-scroll-proportion="-20.777779" vertical-offset="1809" max-vertical-offset="2550" />
+        <state line="158" column="26" selection-start="4761" selection-end="4761" vertical-scroll-proportion="-20.777779" vertical-offset="1809" max-vertical-offset="2550">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/storage/serialization/EventTypeRegister_test.go">
@@ -861,23 +861,9 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="795" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/storage/Repository_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="3" selection-start="332" selection-end="332" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="540">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/storage/serialization/EventTypeRegister.go">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="5" selection-start="78" selection-end="78" vertical-scroll-proportion="0.116504855" vertical-offset="0" max-vertical-offset="795">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/storage/mongodb/Log.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="15" selection-start="15" selection-end="15" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="515">
           <folding />
         </state>
       </provider>
@@ -924,13 +910,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="22" selection-start="272" selection-end="272" vertical-scroll-proportion="0.37598944" vertical-offset="0" max-vertical-offset="855">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/storage/serialization/JsonSerializer.go">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="5" selection-start="68" selection-end="68" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1005">
@@ -952,27 +931,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="40" selection-start="192" selection-end="192" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="750">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/storage/EventStreamId.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="660">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/storage/EventStreamChange.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="126" selection-end="126" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="210">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/storage/Event.go">
       <provider selected="true" editor-type-id="text-editor">
         <state line="4" column="5" selection-start="35" selection-end="35" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="555">
@@ -987,9 +945,46 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/sourcing/EventSource.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="0" selection-start="704" selection-end="704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="22" selection-start="272" selection-end="272" vertical-scroll-proportion="0.0" vertical-offset="340" max-vertical-offset="855">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/storage/mongodb/MongoDB_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="67" column="16" selection-start="1648" selection-end="1648" vertical-scroll-proportion="-9.0" vertical-offset="771" max-vertical-offset="1260">
+          <folding>
+            <marker date="1393161913000" expanded="true" signature="759:1438" placeholder="{ ... }" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/storage/Repository_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="3" selection-start="332" selection-end="332" vertical-scroll-proportion="0.41747573" vertical-offset="25" max-vertical-offset="540">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/storage/EventStreamChange.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="0" selection-start="126" selection-end="126" vertical-scroll-proportion="0.23300971" vertical-offset="0" max-vertical-offset="515">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/storage/Repository.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="15" selection-start="875" selection-end="875" vertical-scroll-proportion="0.0" vertical-offset="315" max-vertical-offset="1575">
+        <state line="39" column="51" selection-start="911" selection-end="911" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1575">
           <folding />
         </state>
       </provider>
@@ -1001,23 +996,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sourcing/EventSource.go">
+    <entry file="file://$PROJECT_DIR$/storage/memory/MemoryBackend.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="0" selection-start="704" selection-end="704" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="720">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/storage/mongodb/MongoDB_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="48" column="32" selection-start="1031" selection-end="1084" vertical-scroll-proportion="0.0" vertical-offset="745" max-vertical-offset="1260">
+        <state line="14" column="1" selection-start="281" selection-end="281" vertical-scroll-proportion="2.5384614" vertical-offset="276" max-vertical-offset="765">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/storage/mongodb/MongoDB.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="44" selection-start="1435" selection-end="1435" vertical-scroll-proportion="0.8446602" vertical-offset="465" max-vertical-offset="1740">
+        <state line="108" column="61" selection-start="2581" selection-end="2581" vertical-scroll-proportion="0.0" vertical-offset="1210" max-vertical-offset="2175">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/storage/EventStreamId.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="660">
           <folding />
         </state>
       </provider>

@@ -26,7 +26,7 @@ func init() {
 }
 
 // The state for the test suite
-type EventStoreTestSuite struct {
+type MongoDBTestSuite struct {
 	store      *MongoDB
 	repository *storage.Repository
 }
@@ -34,9 +34,9 @@ type EventStoreTestSuite struct {
 func TestMangoDB(t *testing.T) { TestingT(t) }
 
 // Setup the test suite
-var _ = Suite(&EventStoreTestSuite{})
+var _ = Suite(&MongoDBTestSuite{})
 
-func (s *EventStoreTestSuite) SetUpSuite(c *C) {
+func (s *MongoDBTestSuite) SetUpSuite(c *C) {
 	if !*testMongoDB {
 		c.Skip("-MongoDB not provided")
 	}
@@ -58,7 +58,7 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 	s.repository = storage.NewRepository(s.store, storage.NewNullEventDispatcher())
 }
 
-func (s *EventStoreTestSuite) TestSmoke(c *C) {
+func (s *MongoDBTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
 	toStore := domain.NewUser("pjvds")
 	for i := 0; i < 24; i++ {

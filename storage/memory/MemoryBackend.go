@@ -22,6 +22,7 @@ func (m *MemoryBackend) WriteStream(change *EventStreamChange) error {
 	}
 
 	m.changes[change.StreamId] = append(changes, change)
+	Log.Debug("Changes: %v", m.changes)
 	return nil
 }
 
