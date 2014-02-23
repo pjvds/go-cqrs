@@ -52,7 +52,7 @@ func (s *MongoDBTestSuite) SetUpSuite(c *C) {
 	usernameChangedName := namer.GetEventNameFromType(usernameChangedType)
 	register.Register(usernameChangedName, usernameChangedType)
 
-	store, _ := DialMongoDB("localhost:27017", "test", "user", register)
+	store := New("localhost:27017", "test", "user", register)
 	s.store = store
 
 	s.repository = storage.NewRepository(s.store, storage.NewNullEventDispatcher())
