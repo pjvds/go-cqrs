@@ -1,6 +1,7 @@
 package sourcing
 
 import (
+	"testing"
 	"encoding/json"
 	. "launchpad.net/gocheck"
 )
@@ -9,8 +10,10 @@ import (
 type EventSourceIdTestSuite struct {
 }
 
+func TestEventSourceId(t *testing.T) { TestingT(t) }
+
 // Setup the test suite
-var _ = Suite(&EventSourceIdTestSuite{})
+//var _ = Suite(&EventSourceIdTestSuite{})
 
 // Make sure we can turn an EventSourceId into a JSON value
 func (s *EventSourceIdTestSuite) TestMarshallJSON(c *C) {

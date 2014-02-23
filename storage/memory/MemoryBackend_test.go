@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"testing"
 	"encoding/json"
 	. "github.com/dominikmayer/go-cqrs/storage"
 	. "launchpad.net/gocheck"
@@ -15,6 +16,8 @@ type myEvent struct {
 // The state for the test suite
 type MemoryBackendSuite struct {
 }
+
+func TestMemoryBackend(t *testing.T) { TestingT(t) }
 
 // Setup the test suite
 var _ = Suite(&MemoryBackendSuite{})
