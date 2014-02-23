@@ -15,6 +15,14 @@ func NewEventStreamId() EventStreamId {
 	return EventStreamId(*guid)
 }
 
+/*func NewEventStreamIdFromString(streamId string) EventStreamId {
+	guid, err := uuid.ParseHex(streamId)
+	if err != nil {
+		panic(err)
+	}
+	return EventStreamId(*guid)
+}*/
+
 func (id EventStreamId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
