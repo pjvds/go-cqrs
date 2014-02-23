@@ -1,12 +1,11 @@
 package mongodb
 
 import (
-	//"bytes"
-	//"encoding/json"
 	. "github.com/dominikmayer/go-cqrs/storage"
 	"github.com/dominikmayer/go-cqrs/storage/serialization"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
+	"errors"
 )
 
 type MongoDB struct {
@@ -23,13 +22,9 @@ func DialMongoDB(url string, database string, collection string, register *seria
 	}, nil
 }
 
-type MemoryBackend struct {
-	changes map[EventStreamId][]*EventStreamChange
-}
-
 func (store *MongoDB) WriteStream(change *EventStreamChange) error {
 	session, err := mgo.Dial(store.baseUrl)
-	Log.Debug("Base-URL: %v", store.baseUrl)
+	//Log.Debug("Base-URL: %v", store.baseUrl)
 	if err != nil {
 		return err
 	}
@@ -37,10 +32,8 @@ func (store *MongoDB) WriteStream(change *EventStreamChange) error {
 
 	collection := session.DB(store.database).C(store.collection)
 
-	data := change
-
-	Log.Debug("Inserting data: %v", data)
-	err = collection.Insert(data)
+	//Log.Debug("Inserting data: %v", change)
+	err = collection.Insert(change.GetPersistableObject())
 	if err != nil {
 		return err
 	}
@@ -49,8 +42,7 @@ func (store *MongoDB) WriteStream(change *EventStreamChange) error {
 }
 
 func (store *MongoDB) ReadStream(streamId EventStreamId) ([]*Event, error) {
-	//events := make([]*Event, 0)
-	events := make([]*EventStreamChange,0)
+	persistedEvents := make([]*EventStreamChangePersist,0)
 	session, err := mgo.Dial(store.baseUrl)
 	if err != nil {
 		return nil, err
@@ -60,23 +52,21 @@ func (store *MongoDB) ReadStream(streamId EventStreamId) ([]*Event, error) {
 	collection := session.DB(store.database).C(store.collection)
 
 	Log.Debug("Stream-ID: %v", streamId)
-	marshallid, marshallerr := streamId.MarshalJSON()
-	//marshallid = NewEventStreamIdFromString(streamId)
-	//marshallid = []byte(streamId.String())
-	Log.Debug("Stream-ID: %v, Error: %v", marshallid, marshallerr)
-	mybson := bson.M{"streamid": marshallid}//bson.Raw{Kind: 0, Data: marshallid,}}
-	Log.Debug("BSON: %v", mybson)
-	err = collection.Find(mybson).All(&events)
-	//err = collection.Find(bson.M{"events.name": "github.com/dominikmayer/go-cqrs/tests/events/UsernameChanged"}).All(&events)
-	Log.Debug("%v Events: %v", len(events), events)
+	mybson := bson.M{"streamid": streamId.String()}
+	err = collection.Find(mybson).All(&persistedEvents)
 	if err != nil {
+		Log.Debug("Error: %v", err)
 		return nil, err
 	}
-	//events = events.Events
-	receivedEvents := events[0].Events
-	Log.Debug("%v Events: %v", len(receivedEvents), receivedEvents)
-	//err = collection.FindId(streamId).All(&events)
+	
+	numberOfEvents := len(persistedEvents)
+	if numberOfEvents > 1 {
+		Log.Debug("%v duplicate objects: %v", numberOfEvents, persistedEvents)
+		return nil, errors.New("Duplicate objects found")
+	}
 
+	receivedEvents := persistedEvents[0].Events
+	Log.Debug("%v unpacked Events: %v", len(receivedEvents), receivedEvents)
 
 	return receivedEvents, nil
 }
