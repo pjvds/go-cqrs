@@ -22,5 +22,5 @@ _testmain.go
 *.exe
 
 # User specific IDEA files
-*/.idea/workspace.xml
-*/.idea/tasks.xml
+.idea/workspace.xml
+.idea/tasks.xml

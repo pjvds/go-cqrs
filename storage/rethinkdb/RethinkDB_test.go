@@ -1,4 +1,4 @@
-package mongodb
+package rethinkdb
 
 import (
 	"testing"
@@ -19,26 +19,26 @@ type myEvent struct {
 	Bar int
 }
 
-var testMongoDB = flag.Bool("mongodb", true, "Include MongoDB tests")
+var testRethinkDB = flag.Bool("rethinkdb", true, "Include RethinkDB tests")
 
 func init() {
 	flag.Parse()
 }
 
 // The state for the test suite
-type MongoDBTestSuite struct {
-	store      *MongoDB
+type RethinkDBTestSuite struct {
+	store      *RethinkDB
 	repository *storage.Repository
 }
 
-func TestMongoDB(t *testing.T) { TestingT(t) }
+func TestRethinkDB(t *testing.T) { TestingT(t) }
 
 // Setup the test suite
-var _ = Suite(&MongoDBTestSuite{})
+var _ = Suite(&RethinkDBTestSuite{})
 
-func (s *MongoDBTestSuite) SetUpSuite(c *C) {
-	if !*testMongoDB {
-		c.Skip("-MongoDB not provided")
+func (s *RethinkDBTestSuite) SetUpSuite(c *C) {
+	if !*testRethinkDB {
+		c.Skip("-RethinkDB not provided")
 	}
 
 	register := serialization.NewEventTypeRegister()
@@ -52,13 +52,13 @@ func (s *MongoDBTestSuite) SetUpSuite(c *C) {
 	usernameChangedName := namer.GetEventNameFromType(usernameChangedType)
 	register.Register(usernameChangedName, usernameChangedType)
 
-	store := New("localhost:27017", "test", "user", register)
+	store := New("localhost:28015", "test", "user", register)
 	s.store = store
 
 	s.repository = storage.NewRepository(s.store, storage.NewNullEventDispatcher())
 }
 
-func (s *MongoDBTestSuite) TestSmoke(c *C) {
+func (s *RethinkDBTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
 	toStore := domain.NewUser("pjvds")
 	for i := 0; i < 24; i++ {
