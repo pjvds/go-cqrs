@@ -24,3 +24,7 @@ _testmain.go
 # User specific IDEA files
 .idea/workspace.xml
 .idea/tasks.xml
+
+# Sublime files
+*.sublime-project
+*.sublime-workspace
