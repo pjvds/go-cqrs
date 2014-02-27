@@ -1,76 +1,112 @@
 package sourcing
 
 import (
+	. "github.com/smartystreets/goconvey/convey"
 	"testing"
-	. "launchpad.net/gocheck"
 )
 
-// The state for the test suite
-type EventRecorderTestSuite struct {
-}
-
-func TestEventRecorder(t *testing.T) { TestingT(t) }
-
-// Setup the test suite
-//var _ = Suite(&EventRecorderTestSuite{})
-
 // Make sure we can record events
-func (s *EventRecorderTestSuite) TestRecord(c *C) {
-	event := Event(struct {
-		Foo string
-	}{
-		Foo: "bar",
+func TestRecord(t *testing.T) {
+	Convey("Given an event and a recorder", t, func() {
+		event := Event(struct {
+			Foo string
+		}{
+			Foo: "bar",
+		})
+
+		recorder := NewEventRecorder()
+
+		Convey("When we record the event", func() {
+			recorder.Record(&event)
+		})
+
+		Convey("Then the recorder should have one event recorded", func() {
+			So(len(recorder.GetEvents()), ShouldEqual, 1)
+		})
+
+		Convey("And the event should resemble the recorded one", func() {
+			recordedEvents := recorder.GetEvents()
+			So(recordedEvents[0], ShouldResemble, &event)
+		})
 	})
-
-	recoder := NewEventRecorder()
-	recoder.Record(&event)
-
-	c.Assert(recoder.GetEvents(), HasLen, 1)
 }
 
 // Make sure we can record events, even if they are the same
-func (s *EventRecorderTestSuite) TestRecordSameEventTwice(c *C) {
-	event := Event(struct {
-		Foo string
-	}{
-		Foo: "bar",
+func TestRecordSameEventTwice(t *testing.T) {
+	Convey("Given an event and a recorder", t, func() {
+		event := Event(struct {
+			Foo string
+		}{
+			Foo: "bar",
+		})
+
+		recorder := NewEventRecorder()
+
+		Convey("When we record the event twice", func() {
+			recorder.Record(&event)
+			recorder.Record(&event)
+		})
+
+		Convey("Then the recorder should have two events recorded", func() {
+			So(len(recorder.GetEvents()), ShouldEqual, 2)
+		})
+
+		Convey("And both events should resemble the recorded one", func() {
+			recordedEvents := recorder.GetEvents()
+			So(recordedEvents[0], ShouldResemble, &event)
+			So(recordedEvents[1], ShouldResemble, &event)
+		})
 	})
-
-	recoder := NewEventRecorder()
-	recoder.Record(&event)
-	recoder.Record(&event)
-
-	c.Assert(recoder.GetEvents(), HasLen, 2)
 }
 
-func (s *EventRecorderTestSuite) TestClearClears(c *C) {
-	event := Event(struct {
-		Foo string
-	}{
-		Foo: "bar",
+func TestClearClears(t *testing.T) {
+	Convey("Given an event and a recorder", t, func() {
+		event := Event(struct {
+			Foo string
+		}{
+			Foo: "bar",
+		})
+
+		recorder := NewEventRecorder()
+
+		Convey("When we record the event", func() {
+			recorder.Record(&event)
+			So(len(recorder.GetEvents()), ShouldEqual, 1)
+		})
+
+		Convey("And clear the recorder", func() {
+			recorder.Clear()
+		})
+
+		Convey("Then the recorder should have no more events recorded", func() {
+			So(len(recorder.GetEvents()), ShouldEqual, 0)
+		})
 	})
-
-	recoder := NewEventRecorder()
-	recoder.Record(&event)
-
-	c.Assert(recoder.GetEvents(), HasLen, 1)
-
-	recoder.Clear()
-
-	c.Assert(recoder.GetEvents(), HasLen, 0)
 }
 
-func (s *EventRecorderTestSuite) TestCanRecordAfterClear(c *C) {
-	event := Event(struct {
-		Foo string
-	}{
-		Foo: "bar",
+func TestCanRecordAfterClear(t *testing.T) {
+	Convey("Given an event and a recorder", t, func() {
+		event := Event(struct {
+			Foo string
+		}{
+			Foo: "bar",
+		})
+
+		recorder := NewEventRecorder()
+
+		Convey("When we record the event", func() {
+			recorder.Record(&event)
+			So(len(recorder.GetEvents()), ShouldEqual, 1)
+		})
+
+		Convey("And clear the recorder", func() {
+			recorder.Clear()
+			So(len(recorder.GetEvents()), ShouldEqual, 0)
+		})
+
+		Convey("Then the recorder should be able to record the event again", func() {
+			recorder.Record(&event)
+			So(len(recorder.GetEvents()), ShouldEqual, 1)
+		})
 	})
-
-	recoder := NewEventRecorder()
-	recoder.Record(&event)
-	recoder.Clear()
-	recoder.Record(&event)
-
-	c.Assert(recoder.GetEvents(), HasLen, 1)
 }
