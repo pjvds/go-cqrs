@@ -28,3 +28,7 @@ _testmain.go
 # Sublime files
 *.sublime-project
 *.sublime-workspace
+rethinkdb_data/fc1c4823-5b08-427f-96d8-8005cb47d1a5
+
+# RethinkDB
+rethinkdb_data

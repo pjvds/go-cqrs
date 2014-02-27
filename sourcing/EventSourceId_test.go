@@ -1,50 +1,67 @@
 package sourcing
 
 import (
-	"testing"
 	"encoding/json"
-	. "launchpad.net/gocheck"
+	. "github.com/smartystreets/goconvey/convey"
+	"testing"
 )
 
-// The state for the test suite
-type EventSourceIdTestSuite struct {
-}
-
-func TestEventSourceId(t *testing.T) { TestingT(t) }
-
-// Setup the test suite
-//var _ = Suite(&EventSourceIdTestSuite{})
-
 // Make sure we can turn an EventSourceId into a JSON value
-func (s *EventSourceIdTestSuite) TestMarshallJSON(c *C) {
-	id := NewEventSourceId()
+func TestMarshallJSON(t *testing.T) {
+	Convey("Given we have an object with an id and a pointer to that id", t, func() {
+		id := NewEventSourceId()
 
-	t := &struct {
-		Id    EventSourceId  `json:"id"`
-		IdPtr *EventSourceId `json:"idPtr"`
-	}{
-		Id:    id,
-		IdPtr: &id,
-	}
+		testobject := &struct {
+			Id    EventSourceId  `json:"id"`
+			IdPtr *EventSourceId `json:"idPtr"`
+		}{
+			Id:    id,
+			IdPtr: &id,
+		}
 
-	b, err := json.Marshal(t)
-	c.Assert(err, IsNil)
+		Convey("When we marshall the object", func() {
+			b, err := json.Marshal(testobject)
 
-	c.Assert(string(b), Equals, "{\"id\":\""+t.Id.String()+"\",\"idPtr\":\""+t.IdPtr.String()+"\"}")
+			Convey("Then there is no error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("And the object is marshalled correctly", func() {
+				So(string(b), ShouldEqual, "{\"id\":\""+testobject.Id.String()+"\",\"idPtr\":\""+testobject.IdPtr.String()+"\"}")
+			})
+
+		})
+	})
 }
 
 // Make sure we can turn an JSON value into an EventSourceId
-func (s *EventSourceIdTestSuite) TestUnMarshallJSON(c *C) {
-	t := &struct {
-		Id    EventSourceId  `json:"id"`
-		IdPtr *EventSourceId `json:"idPtr"`
-	}{}
+func TestUnMarshallJSON(t *testing.T) {
+	Convey("Given we have the JSON representation of an object with an id and a pointer to that id", t, func() {
 
-	id := NewEventSourceId()
-	data := []byte("{\"id\":\"" + id.String() + "\",\"idPtr\":\"" + id.String() + "\"}")
-	err := json.Unmarshal(data, &t)
-	c.Assert(err, IsNil)
+		id := NewEventSourceId()
 
-	c.Assert(t.Id, Equals, id)
-	c.Assert(*t.IdPtr, Equals, id)
+		testobject := &struct {
+			Id    EventSourceId  `json:"id"`
+			IdPtr *EventSourceId `json:"idPtr"`
+		}{}
+
+		data := []byte("{\"id\":\"" + id.String() + "\",\"idPtr\":\"" + id.String() + "\"}")
+
+		Convey("When we unmarshall the object", func() {
+			err := json.Unmarshal(data, &testobject)
+
+			Convey("Then there is no error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("The unmarshalled id is equal to the original one", func() {
+				So(testobject.Id, ShouldResemble, id)
+			})
+
+			Convey("And the unmarshalled pointer points to the id", func() {
+				So(*testobject.IdPtr, ShouldResemble, id)
+				// So(testobject.IdPtr, ShouldPointTo, &testobject.Id) //TODO
+			})
+		})
+	})
 }
