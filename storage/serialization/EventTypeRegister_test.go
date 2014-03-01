@@ -2,8 +2,10 @@ package serialization
 
 import (
 	"github.com/dominikmayer/go-cqrs/storage"
+	. "github.com/smartystreets/goconvey/convey"
 	. "launchpad.net/gocheck"
 	"reflect"
+	"testing"
 )
 
 type AType struct{}
@@ -19,7 +21,29 @@ var _ = Suite(&EventTypeRegisterTestSuite{})
 func (suite *EventTypeRegisterTestSuite) SetUpSuite(c *C) {
 }
 
-func (suite *EventTypeRegisterTestSuite) TestRegistersAlwaysElementTypes(c *C) {
+func TestRegistersAlwaysElementTypes(t *testing.T) {
+	Convey("Given a register and three EventNames A, B and C", t, func() {
+		register := NewEventTypeRegister()
+
+		aName := *storage.NewEventName("A")
+		bName := *storage.NewEventName("B")
+		cName := *storage.NewEventName("C")
+
+		Convey("We register A, B and C by instance, B with a pointer type, C with a variable of pointer type", func() { //TODO: Is A or B the pointer?
+			register.RegisterInstance(aName, AType{})
+			register.RegisterInstance(bName, &BType{})
+
+			ctype := &CType{}
+			register.RegisterInstance(cName, &ctype)
+
+			Convey("When we", func() {
+
+			})
+		})
+	})
+}
+
+func (suite *EventTypeRegisterTestSuite) TestRegistersAlwaysElementTypesAlt(c *C) {
 	aName := *storage.NewEventName("A")
 	bName := *storage.NewEventName("B")
 	cName := *storage.NewEventName("C")
