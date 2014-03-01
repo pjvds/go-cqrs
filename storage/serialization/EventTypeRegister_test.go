@@ -22,22 +22,45 @@ func (suite *EventTypeRegisterTestSuite) SetUpSuite(c *C) {
 }
 
 func TestRegistersAlwaysElementTypes(t *testing.T) {
-	Convey("Given a register and three EventNames A, B and C", t, func() {
+	Convey("Given a register and three EventNames A, B and C of types AType, BType and CType", t, func() {
 		register := NewEventTypeRegister()
 
 		aName := *storage.NewEventName("A")
 		bName := *storage.NewEventName("B")
 		cName := *storage.NewEventName("C")
 
-		Convey("We register A, B and C by instance, B with a pointer type, C with a variable of pointer type", func() { //TODO: Is A or B the pointer?
+		Convey("We register A by instance", func() { //TODO: Is A or B the pointer?
 			register.RegisterInstance(aName, AType{})
+
+			Convey("When we get the type of A", func() {
+				aType, _ := register.Get(aName)
+
+				Convey("Then it should be of kind Struct", func() {
+					So(aType.Kind(), ShouldEqual, reflect.Struct)
+				})
+			})
+		})
+		Convey("We register B by instance with a pointer type", func() { //TODO: Is A or B the pointer?
 			register.RegisterInstance(bName, &BType{})
 
+			Convey("When we get the type of B", func() {
+				bType, _ := register.Get(aName)
+
+				Convey("Then it should be of kind Struct", func() {
+					So(bType.Kind(), ShouldEqual, reflect.Struct)
+				})
+			})
+		})
+		Convey("We register C by instance with a variable of pointer type", func() { //TODO: Is A or B the pointer?
 			ctype := &CType{}
 			register.RegisterInstance(cName, &ctype)
 
-			Convey("When we", func() {
+			Convey("When we get the type of C", func() {
+				cType, _ := register.Get(aName)
 
+				Convey("Then it should be of kind Struct", func() {
+					So(cType.Kind(), ShouldEqual, reflect.Struct)
+				})
 			})
 		})
 	})
