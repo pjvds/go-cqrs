@@ -31,6 +31,8 @@ func NewReflectBasedRouter(source interface{}) EventRouter {
 	} else {
 		// TODO: Now namer could change between entries
 		handlers = createEventHandlersForType(sourceType)
+		// Set cache value for later use
+		cache[sourceType] = handlers
 	}
 
 	return &ReflectBasedRouter{
