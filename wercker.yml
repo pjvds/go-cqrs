@@ -27,12 +27,12 @@ build:
             go get github.com/axw/gocov/gocov
             gocov test ./... > coverage.json
 
-    - script:
-        name: Coverage
-        code: |-
-            go get github.com/matm/gocov-html
-            gocov report coverage.json
-            gocov-html coverage.json > $WERCKER_REPORT_ARTIFACTS_DIR/coverage.html
+    # - script:
+    #     name: Coverage
+    #     code: |-
+    #         go get github.com/matm/gocov-html
+    #         gocov report coverage.json
+    #         gocov-html coverage.json > $WERCKER_REPORT_ARTIFACTS_DIR/coverage.html
 
     - script:
         name: Coveralls.io
