@@ -18,16 +18,16 @@ Here are the examples of the main concepts.
 user := domain.NewUser("pjvds")
 c.Assert(user.Username, Equals, "pjvds")
 
-// We created a new user, this should be
-// captured by an event.
+// We created a new user, and this is
+// represented by an event.
 c.Assert(len(user.Events()), Equals, 1)
 
 // Change the username of the user
 user.ChangeUsername("wwwouter")
 c.Assert(user.Username, Equals, "wwwouter")
 
-// We changed the username, this should be
-// captured by an event.
+// We changed the username, and this is
+// also represented by an event.
 c.Assert(len(user.Events()), Equals, 2)
 ```
 
