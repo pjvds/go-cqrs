@@ -6,6 +6,7 @@ import (
 
 type ObjectId uuid.UUID
 
+// Creates a new unique ObjectId.
 func NewObjectId() ObjectId {
 	guid, err := uuid.NewV4()
 	if err != nil {
@@ -15,6 +16,8 @@ func NewObjectId() ObjectId {
 	return ObjectId(*guid)
 }
 
+// Creates a ObjectId from the given string value. It
+// accepts strings in the following format: "6ba7b814-9dad-11d1-80b4-00c04fd430c8"
 func ParseObjectId(value string) (id ObjectId, err error) {
 	guid := new(uuid.UUID)
 	if guid, err = uuid.ParseHex(value); err == nil {
@@ -24,6 +27,7 @@ func ParseObjectId(value string) (id ObjectId, err error) {
 	return
 }
 
+// Returns a string representation of the ObjectId, like 6ba7b814-9dad-11d1-80b4-00c04fd430c8.
 func (id ObjectId) String() string {
 	guid := uuid.UUID(id)
 	return guid.String()
