@@ -33,11 +33,13 @@ func (id ObjectId) String() string {
 	return guid.String()
 }
 
+// Returns the JSON encoding of the id.
 func (id ObjectId) MarshalJSON() ([]byte, error) {
 	value := uuid.UUID(id)
 	return value.MarshalJSON()
 }
 
+// Sets id to the copy of the data.
 func (id *ObjectId) UnmarshalJSON(b []byte) error {
 	value := uuid.UUID(*id)
 	err := value.UnmarshalJSON(b)
