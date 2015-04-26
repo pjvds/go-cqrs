@@ -7,7 +7,7 @@ import (
 
 var (
 	methodHandlerPrefix = "Handle"
-	cache               map[reflect.Type]handlersMap
+	cache               = make(map[reflect.Type]handlersMap)
 )
 
 type handlersMap map[reflect.Type]func(source interface{}, event Event)
