@@ -34,13 +34,13 @@ build:
     #         gocov report coverage.json
     #         gocov-html coverage.json > $WERCKER_REPORT_ARTIFACTS_DIR/coverage.html
 
-    - script:
-        name: Coveralls.io
-        code: |-
-            # The COVERALLS_TOKEN is set in the project at
-            # wercker as project environment variable.
-            go get github.com/mattn/goveralls
-            goveralls -package="./..." -service='wercker.com' $COVERALLS_TOKEN
+    # - script:
+    #    name: Coveralls.io
+    #    code: |-
+    #        # The COVERALLS_TOKEN is set in the project at
+    #        # wercker as project environment variable.
+    #        go get github.com/mattn/goveralls
+    #        goveralls -package="./..." -service='wercker.com' $COVERALLS_TOKEN
 
     # - script:
     #     name: Benchmark
