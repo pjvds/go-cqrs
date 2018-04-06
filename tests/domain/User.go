@@ -41,8 +41,8 @@ func NewUserFromHistory(sourceId sourcing.EventSourceId, history []sourcing.Even
 // Change the username to a new name.
 func (user *User) ChangeUsername(username string) error {
 	// Validate username
-	if lenght := len(username); lenght < 3 || lenght > 20 {
-		return errors.New("invalid username lenght")
+	if length := len(username); length < 3 || length > 20 {
+		return errors.New("invalid username length")
 	}
 
 	// Raise the fact that the username is changed.
