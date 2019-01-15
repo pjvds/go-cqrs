@@ -12,6 +12,8 @@ type EventSource interface {
 
 	// Get all events that happened since the last accept, or all if accept was never called.
 	Events() []Event
+
+	Accept()
 }
 
 type eventSource struct {
@@ -39,4 +41,8 @@ func (source *eventSource) Events() []Event {
 func (source *eventSource) Apply(event Event) {
 	source.applier.Route(event)
 	source.recorder.Record(event)
+}
+
+func (source *eventSource) Accept() {
+	source.recorder.Clear()
 }
