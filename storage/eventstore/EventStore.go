@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/dominikmayer/go-cqrs/storage"
-	"github.com/dominikmayer/go-cqrs/storage/serialization"
+	"github.com/pjvds/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage/serialization"
 	"net/http"
 	"net/url"
 )

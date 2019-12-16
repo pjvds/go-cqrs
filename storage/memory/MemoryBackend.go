@@ -1,7 +1,7 @@
 package memory
 
 import (
-	. "github.com/dominikmayer/go-cqrs/storage"
+	. "github.com/pjvds/go-cqrs/storage"
 )
 
 type MemoryBackend struct {

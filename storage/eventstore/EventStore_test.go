@@ -3,12 +3,13 @@ package eventstore
 import (
 	"flag"
 	"fmt"
-	"github.com/dominikmayer/go-cqrs/storage"
-	"github.com/dominikmayer/go-cqrs/storage/serialization"
-	"github.com/dominikmayer/go-cqrs/tests/domain"
-	. "github.com/dominikmayer/go-cqrs/tests/events"
-	. "launchpad.net/gocheck"
 	"reflect"
+
+	"github.com/pjvds/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage/serialization"
+	"github.com/pjvds/go-cqrs/tests/domain"
+	. "github.com/pjvds/go-cqrs/tests/events"
+	. "launchpad.net/gocheck"
 )
 
 var testEventstore = flag.Bool("eventstore", false, "Include eventstore tests")

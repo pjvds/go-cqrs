@@ -3,7 +3,7 @@ package memory
 import (
 	"testing"
 	"encoding/json"
-	. "github.com/dominikmayer/go-cqrs/storage"
+	. "github.com/pjvds/go-cqrs/storage"
 	. "launchpad.net/gocheck"
 	"time"
 )

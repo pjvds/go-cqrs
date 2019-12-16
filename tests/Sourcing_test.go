@@ -1,11 +1,12 @@
 package tests
 
 import (
-	"github.com/dominikmayer/go-cqrs/sourcing"
-	"github.com/dominikmayer/go-cqrs/tests/domain"
-	"github.com/dominikmayer/go-cqrs/tests/events"
-	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+
+	"github.com/pjvds/go-cqrs/sourcing"
+	"github.com/pjvds/go-cqrs/tests/domain"
+	"github.com/pjvds/go-cqrs/tests/events"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestStateChangesAreRepresentedByEvents(t *testing.T) {

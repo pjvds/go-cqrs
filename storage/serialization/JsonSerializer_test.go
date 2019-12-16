@@ -1,7 +1,7 @@
 package serialization
 
 import (
-	"github.com/dominikmayer/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage"
 	. "github.com/smartystreets/goconvey/convey"
 	"reflect"
 	"testing"
@@ -26,7 +26,7 @@ func TestSerialize(t *testing.T) {
 	serializer := NewJsonSerializer(types)
 
 	Convey("Given an event and its JSON", t, func() {
-		expectedJson := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/dominikmayer/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"\",\"Bar\":0}}"
+		expectedJson := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/pjvds/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"\",\"Bar\":0}}"
 
 		timestamp, _ := time.Parse(time.RFC3339, "2011-02-01T12:32:40-05:00")
 
@@ -52,7 +52,7 @@ func TestSerialize(t *testing.T) {
 	})
 
 	Convey("Given", func() {
-		json := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/dominikmayer/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"hello world\",\"Bar\":42}}"
+		json := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/pjvds/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"hello world\",\"Bar\":42}}"
 
 		Convey("Given", func() {
 			event, err := serializer.Deserialize(eventName, []byte(json))

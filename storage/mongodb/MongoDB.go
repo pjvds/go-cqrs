@@ -2,8 +2,8 @@ package mongodb
 
 import (
 	"errors"
-	. "github.com/dominikmayer/go-cqrs/storage"
-	"github.com/dominikmayer/go-cqrs/storage/serialization"
+	. "github.com/pjvds/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage/serialization"
 	"labix.org/v2/mgo"
 	"labix.org/v2/mgo/bson"
 )

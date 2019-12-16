@@ -1,8 +1,8 @@
 package rethinkdb
 
 import (
-	. "github.com/dominikmayer/go-cqrs/storage"
-	"github.com/dominikmayer/go-cqrs/storage/serialization"
+	. "github.com/pjvds/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage/serialization"
 	r "github.com/dancannon/gorethink"
 )
 

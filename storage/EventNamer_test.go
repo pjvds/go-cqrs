@@ -19,7 +19,7 @@ func TestEventNamer(t *testing.T) {
 			So(result, ShouldHaveSameTypeAs, &TypeEventNamer{})
 		})
 
-		Convey("When we have an event 'myEvent' in the package 'github.com/dominikmayer/go-cqrs/storage'", func() {
+		Convey("When we have an event 'myEvent' in the package 'github.com/pjvds/go-cqrs/storage'", func() {
 			event := myEvent{
 				Foo: "baz",
 				Bar: 42,
@@ -27,13 +27,13 @@ func TestEventNamer(t *testing.T) {
 			Convey("And we request the event name", func() {
 				name := result.GetEventName(event)
 
-				Convey("Then it should be 'github.com/dominikmayer/go-cqrs/storage/myEvent'", func() {
-					So(name, ShouldEqual, "github.com/dominikmayer/go-cqrs/storage/myEvent")
+				Convey("Then it should be 'github.com/pjvds/go-cqrs/storage/myEvent'", func() {
+					So(name, ShouldEqual, "github.com/pjvds/go-cqrs/storage/myEvent")
 				})
 			})
 		})
 
-		Convey("When we have a pointer to 'myEvent' in the package 'github.com/dominikmayer/go-cqrs/storage'", func() {
+		Convey("When we have a pointer to 'myEvent' in the package 'github.com/pjvds/go-cqrs/storage'", func() {
 			event := &myEvent{
 				Foo: "baz",
 				Bar: 42,
@@ -41,8 +41,8 @@ func TestEventNamer(t *testing.T) {
 			Convey("And we request the event name", func() {
 				name := result.GetEventName(event)
 
-				Convey("Then it should be 'github.com/dominikmayer/go-cqrs/storage/myEvent'", func() {
-					So(name, ShouldEqual, "github.com/dominikmayer/go-cqrs/storage/myEvent")
+				Convey("Then it should be 'github.com/pjvds/go-cqrs/storage/myEvent'", func() {
+					So(name, ShouldEqual, "github.com/pjvds/go-cqrs/storage/myEvent")
 				})
 			})
 		})

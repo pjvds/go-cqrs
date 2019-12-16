@@ -1,8 +1,8 @@
 package serialization
 
 import (
-	"github.com/dominikmayer/go-cqrs/sourcing"
-	"github.com/dominikmayer/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/sourcing"
+	"github.com/pjvds/go-cqrs/storage"
 	"reflect"
 )
 

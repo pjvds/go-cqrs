@@ -1,7 +1,7 @@
 package serialization
 
 import (
-	"github.com/dominikmayer/go-cqrs/storage"
+	"github.com/pjvds/go-cqrs/storage"
 	. "github.com/smartystreets/goconvey/convey"
 	"reflect"
 	"testing"
