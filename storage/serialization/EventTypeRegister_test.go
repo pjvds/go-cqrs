@@ -1,70 +1,64 @@
 package serialization
 
 import (
-	"github.com/pjvds/go-cqrs/storage"
-	. "launchpad.net/gocheck"
+	"github.com/dominikmayer/go-cqrs/storage"
+	. "github.com/smartystreets/goconvey/convey"
 	"reflect"
+	"testing"
 )
 
 type AType struct{}
 type BType struct{}
 type CType struct{}
 
-type EventTypeRegisterTestSuite struct {
-}
+func TestEventTypeRegister(t *testing.T) {
+	Convey("Given a register and three EventNames A, B and C of types AType, BType and CType", t, func() {
+		register := NewEventTypeRegister()
 
-// Setup the test suite
-var _ = Suite(&EventTypeRegisterTestSuite{})
+		aName := *storage.NewEventName("A")
+		bName := *storage.NewEventName("B")
+		cName := *storage.NewEventName("C")
 
-func (suite *EventTypeRegisterTestSuite) SetUpSuite(c *C) {
-}
+		Convey("When we try to get the type of A", func() {
+			_, notOk := register.Get(aName)
 
-func (suite *EventTypeRegisterTestSuite) TestRegistersAlwaysElementTypes(c *C) {
-	aName := *storage.NewEventName("A")
-	bName := *storage.NewEventName("B")
-	cName := *storage.NewEventName("C")
+			Convey("Then Get should return 'not ok'/false", func() {
+				So(notOk, ShouldBeFalse)
+			})
+		})
 
-	register := NewEventTypeRegister()
-	register.RegisterInstance(aName, AType{})
-	register.RegisterInstance(bName, &BType{})
+		Convey("We register A by instance", func() { //TODO: Is A or B the pointer?
+			register.RegisterInstance(aName, AType{})
+		})
+		Convey("We register B by instance with a pointer type", func() { //TODO: Is A or B the pointer?
+			register.RegisterInstance(bName, &BType{})
+		})
+		Convey("We register C by instance with a variable of pointer type", func() { //TODO: Is A or B the pointer?
+			ctype := &CType{}
+			register.RegisterInstance(cName, &ctype)
+		})
+		Convey("When we get the types", func() {
+			aType, okA := register.Get(aName)
+			bType, okB := register.Get(bName)
+			cType, okC := register.Get(cName)
 
-	ctype := &CType{}
-	register.RegisterInstance(cName, &ctype)
+			Convey("Then they should not be nil", func() {
+				So(aType, ShouldNotBeNil)
+				So(bType, ShouldNotBeNil)
+				So(cType, ShouldNotBeNil)
+			})
 
-	aType, _ := register.Get(aName)
-	bType, _ := register.Get(bName)
-	cType, _ := register.Get(cName)
+			Convey("They should all be of kind Struct", func() {
+				So(aType.Kind(), ShouldEqual, reflect.Struct)
+				So(bType.Kind(), ShouldEqual, reflect.Struct)
+				So(cType.Kind(), ShouldEqual, reflect.Struct)
+			})
 
-	c.Assert(aType.Kind(), Equals, reflect.Struct)
-	c.Assert(bType.Kind(), Equals, reflect.Struct)
-	c.Assert(cType.Kind(), Equals, reflect.Struct)
-}
-
-func (suite *EventTypeRegisterTestSuite) TestGetReturnsOkForKnownType(c *C) {
-	aName := *storage.NewEventName("A")
-
-	register := NewEventTypeRegister()
-	register.RegisterInstance(aName, AType{})
-
-	_, ok := register.Get(aName)
-	c.Assert(ok, Equals, true)
-}
-
-func (suite *EventTypeRegisterTestSuite) TestGetReturnsNOkForUnknownType(c *C) {
-	aName := *storage.NewEventName("A")
-
-	register := NewEventTypeRegister()
-
-	_, ok := register.Get(aName)
-	c.Assert(ok, Equals, false)
-}
-
-func (suite *EventTypeRegisterTestSuite) TestGetReturnsType(c *C) {
-	aName := *storage.NewEventName("A")
-
-	register := NewEventTypeRegister()
-	register.RegisterInstance(aName, AType{})
-
-	t, _ := register.Get(aName)
-	c.Assert(t, NotNil)
+			Convey("And Get should have returned 'ok'", func() {
+				So(okA, ShouldBeTrue)
+				So(okB, ShouldBeTrue)
+				So(okC, ShouldBeTrue)
+			})
+		})
+	})
 }

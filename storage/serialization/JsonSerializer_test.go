@@ -1,9 +1,10 @@
 package serialization
 
 import (
-	"github.com/pjvds/go-cqrs/storage"
-	. "launchpad.net/gocheck"
+	"github.com/dominikmayer/go-cqrs/storage"
+	. "github.com/smartystreets/goconvey/convey"
 	"reflect"
+	"testing"
 	"time"
 )
 
@@ -12,17 +13,7 @@ type FooEvent struct {
 	Bar int
 }
 
-type JsonSerializerTestSuite struct {
-	fooEventType reflect.Type
-	fooEventName storage.EventName
-
-	serializer *JsonSerializer
-}
-
-// Setup the test suite
-var _ = Suite(&JsonSerializerTestSuite{})
-
-func (suite *JsonSerializerTestSuite) SetUpSuite(c *C) {
+func TestSerialize(t *testing.T) {
 	namer := storage.NewTypeEventNamer()
 
 	event := new(FooEvent)
@@ -32,39 +23,56 @@ func (suite *JsonSerializerTestSuite) SetUpSuite(c *C) {
 	types := NewEventTypeRegister()
 	types.Register(eventName, eventType)
 
-	suite.fooEventName = eventName
-	suite.fooEventType = eventType
-	suite.serializer = NewJsonSerializer(types)
-}
+	serializer := NewJsonSerializer(types)
 
-func (suite *JsonSerializerTestSuite) TestSerialize(c *C) {
-	expectedJson := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/pjvds/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"\",\"Bar\":0}}"
+	Convey("Given an event and its JSON", t, func() {
+		expectedJson := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/dominikmayer/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"\",\"Bar\":0}}"
 
-	timestamp, _ := time.Parse(time.RFC3339, "2011-02-01T12:32:40-05:00")
+		timestamp, _ := time.Parse(time.RFC3339, "2011-02-01T12:32:40-05:00")
 
-	eventId, err := storage.ParseEventId("\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\"")
-	c.Assert(err, IsNil)
+		eventId, err := storage.ParseEventId("\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\"")
+		So(err, ShouldBeNil)
 
-	event := new(FooEvent)
+		event := new(FooEvent)
 
-	envelope := storage.NewEvent(*eventId, suite.fooEventName, storage.NewEventSequence(0), timestamp, event)
-	data, err := suite.serializer.Serialize(envelope)
+		envelope := storage.NewEvent(*eventId, eventName, storage.NewEventSequence(0), timestamp, event)
 
-	c.Assert(err, IsNil)
+		Convey("When we serialize the event", func() {
+			data, err := serializer.Serialize(envelope)
 
-	actualJson := string(data)
-	c.Assert(actualJson, Equals, expectedJson)
-}
+			Convey("Then there should be no errors", func() {
+				So(err, ShouldBeNil)
+			})
 
-func (suite *JsonSerializerTestSuite) TestDerialize(c *C) {
-	json := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/pjvds/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"hello world\",\"Bar\":42}}"
-	serializer := suite.serializer
+			Convey("And the serialized JSON should match the expected one", func() {
+				actualJson := string(data)
+				So(actualJson, ShouldEqual, expectedJson)
+			})
+		})
+	})
 
-	event, err := serializer.Deserialize(suite.fooEventName, []byte(json))
-	c.Assert(err, IsNil)
-	c.Assert(event, NotNil)
-	c.Assert(event.Data, FitsTypeOf, new(FooEvent))
+	Convey("Given", func() {
+		json := "{\"eventId\":\"25f7fdb6-5ef9-47b0-55a1-b9160ce37730\",\"name\":\"github.com/dominikmayer/go-cqrs/storage/serialization/FooEvent\",\"sequence\":0,\"timestamp\":\"2011-02-01T12:32:40-05:00\",\"payload\":{\"Foo\":\"hello world\",\"Bar\":42}}"
 
-	c.Assert(event.Data.(*FooEvent).Foo, Equals, "hello world")
-	c.Assert(event.Data.(*FooEvent).Bar, Equals, 42)
+		Convey("Given", func() {
+			event, err := serializer.Deserialize(eventName, []byte(json))
+
+			Convey("Then there is no error", func() {
+				So(err, ShouldBeNil)
+			})
+
+			Convey("The data was retrieved", func() {
+				So(event, ShouldNotBeNil)
+			})
+
+			Convey("It has the correct type", func() {
+				So(event.Data, ShouldHaveSameTypeAs, new(FooEvent))
+			})
+
+			Convey("And the content was correctly deserialized", func() {
+				So(event.Data.(*FooEvent).Foo, ShouldEqual, "hello world")
+				So(event.Data.(*FooEvent).Bar, ShouldEqual, 42)
+			})
+		})
+	})
 }

@@ -2,8 +2,8 @@ package domain
 
 import (
 	"errors"
-	"github.com/pjvds/go-cqrs/sourcing"
-	"github.com/pjvds/go-cqrs/tests/events"
+	"github.com/dominikmayer/go-cqrs/sourcing"
+	"github.com/dominikmayer/go-cqrs/tests/events"
 )
 
 // Holds the state of our user. Note that the

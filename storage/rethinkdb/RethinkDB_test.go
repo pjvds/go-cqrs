@@ -1,6 +1,9 @@
-package eventstore
+package rethinkdb
 
 import (
+	"testing"
+	//. "github.com/smartystreets/goconvey/convey"
+
 	"flag"
 	"fmt"
 	"github.com/dominikmayer/go-cqrs/storage"
@@ -11,24 +14,31 @@ import (
 	"reflect"
 )
 
-var testEventstore = flag.Bool("eventstore", false, "Include eventstore tests")
+type myEvent struct {
+	Foo string
+	Bar int
+}
+
+var testRethinkDB = flag.Bool("rethinkdb", true, "Include RethinkDB tests")
 
 func init() {
 	flag.Parse()
 }
 
 // The state for the test suite
-type EventStoreTestSuite struct {
-	store      *EventStore
+type RethinkDBTestSuite struct {
+	store      *RethinkDB
 	repository *storage.Repository
 }
 
-// Setup the test suite
-var _ = Suite(&EventStoreTestSuite{})
+func TestRethinkDB(t *testing.T) { TestingT(t) }
 
-func (s *EventStoreTestSuite) SetUpSuite(c *C) {
-	if !*testEventstore {
-		c.Skip("-eventstore not provided")
+// Setup the test suite
+var _ = Suite(&RethinkDBTestSuite{})
+
+func (s *RethinkDBTestSuite) SetUpSuite(c *C) {
+	if !*testRethinkDB {
+		c.Skip("-RethinkDB not provided")
 	}
 
 	register := serialization.NewEventTypeRegister()
@@ -42,13 +52,13 @@ func (s *EventStoreTestSuite) SetUpSuite(c *C) {
 	usernameChangedName := namer.GetEventNameFromType(usernameChangedType)
 	register.Register(usernameChangedName, usernameChangedType)
 
-	store, _ := DailEventStore("http://localhost:2113", register)
+	store := New("localhost:28015", "test", "user", register)
 	s.store = store
 
 	s.repository = storage.NewRepository(s.store, storage.NewNullEventDispatcher())
 }
 
-func (s *EventStoreTestSuite) TestSmoke(c *C) {
+func (s *RethinkDBTestSuite) TestSmoke(c *C) {
 	// Create a new domain object
 	toStore := domain.NewUser("pjvds")
 	for i := 0; i < 24; i++ {

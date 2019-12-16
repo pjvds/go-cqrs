@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/pjvds/go-cqrs/storage"
+	"github.com/dominikmayer/go-cqrs/storage"
 	"reflect"
 	"time"
 )

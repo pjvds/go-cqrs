@@ -1,7 +1,8 @@
 package storage
 
 import (
-	. "launchpad.net/gocheck"
+	. "github.com/smartystreets/goconvey/convey"
+	"testing"
 )
 
 type myEvent struct {
@@ -9,31 +10,41 @@ type myEvent struct {
 	Bar int
 }
 
-func (s *EventNamerTestSuite) TestNewTypeEventNamerReturnsValue(c *C) {
-	result := NewTypeEventNamer()
-	c.Assert(result, NotNil)
-}
+func TestEventNamer(t *testing.T) {
+	Convey("When we request a new TypeEventNamer", t, func() {
+		result := NewTypeEventNamer()
 
-func (s *EventNamerTestSuite) TestGetEventName(c *C) {
-	event := myEvent{
-		Foo: "baz",
-		Bar: 42,
-	}
+		Convey("Then we should be given one", func() {
+			So(result, ShouldNotBeNil)
+			So(result, ShouldHaveSameTypeAs, &TypeEventNamer{})
+		})
 
-	result := NewTypeEventNamer()
-	name := result.GetEventName(event)
+		Convey("When we have an event 'myEvent' in the package 'github.com/dominikmayer/go-cqrs/storage'", func() {
+			event := myEvent{
+				Foo: "baz",
+				Bar: 42,
+			}
+			Convey("And we request the event name", func() {
+				name := result.GetEventName(event)
 
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
-}
+				Convey("Then it should be 'github.com/dominikmayer/go-cqrs/storage/myEvent'", func() {
+					So(name, ShouldEqual, "github.com/dominikmayer/go-cqrs/storage/myEvent")
+				})
+			})
+		})
 
-func (s *EventNamerTestSuite) TestGetEventNameForPointer(c *C) {
-	event := &myEvent{
-		Foo: "baz",
-		Bar: 42,
-	}
+		Convey("When we have a pointer to 'myEvent' in the package 'github.com/dominikmayer/go-cqrs/storage'", func() {
+			event := &myEvent{
+				Foo: "baz",
+				Bar: 42,
+			}
+			Convey("And we request the event name", func() {
+				name := result.GetEventName(event)
 
-	result := NewTypeEventNamer()
-	name := result.GetEventName(event)
-
-	c.Assert(name, Equals, EventName("github.com/pjvds/go-cqrs/storage/myEvent"))
+				Convey("Then it should be 'github.com/dominikmayer/go-cqrs/storage/myEvent'", func() {
+					So(name, ShouldEqual, "github.com/dominikmayer/go-cqrs/storage/myEvent")
+				})
+			})
+		})
+	})
 }

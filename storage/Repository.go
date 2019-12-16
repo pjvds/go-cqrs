@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/pjvds/go-cqrs/sourcing"
+	"github.com/dominikmayer/go-cqrs/sourcing"
 	"time"
 )
 
