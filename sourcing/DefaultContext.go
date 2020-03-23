@@ -8,6 +8,6 @@ func CreateNew(source interface{}) EventSource {
 	return defaultContext.CreateNew(source)
 }
 
-func CreateFromHistory(source interface{}, id EventSourceId, history []Event) EventSource {
-	return defaultContext.CreateFromHistory(source, id, history)
+func CreateFromHistory(source interface{}, history []Event) EventSource {
+	return defaultContext.CreateFromHistory(source, history)
 }

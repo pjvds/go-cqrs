@@ -1,11 +1,6 @@
 package sourcing
 
-import ()
-
 type EventSource interface {
-	// Gets the id of the event source
-	Id() EventSourceId
-
 	// Applies an event to the event source which will get recorded and applied.
 	// The later means the state of the event source is updated according to the event.
 	Apply(event Event)
@@ -17,21 +12,15 @@ type EventSource interface {
 }
 
 type eventSource struct {
-	id       EventSourceId
 	applier  EventRouter
 	recorder EventRecorder
 }
 
-func newEventSource(id EventSourceId, applier EventRouter, eventRecorder EventRecorder) *eventSource {
+func newEventSource(applier EventRouter, recorder EventRecorder) *eventSource {
 	return &eventSource{
-		id:       id,
 		applier:  applier,
-		recorder: eventRecorder,
+		recorder: recorder,
 	}
-}
-
-func (source *eventSource) Id() EventSourceId {
-	return source.id
 }
 
 func (source *eventSource) Events() []Event {
